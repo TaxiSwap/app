@@ -94,6 +94,10 @@ const useWallet = () => {
     },
     [checkNetwork]
   );
+  
+  useEffect(() => {
+    connect();
+  }, [connect]);
 
   return { account, connect, networkName, disconnect, switchNetwork };
 };
