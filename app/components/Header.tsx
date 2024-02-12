@@ -15,13 +15,6 @@ const Header = () => {
       </div>
       <div className="flex items-center">
         <NetworkButton />
-        <div className="ml-4">
-          {account && (
-            <div className="text-sm bg-red-600 px-3 py-1 rounded-full">
-              Unsupported Network
-            </div>
-          )}
-        </div>
         <WalletButton />
       </div>
     </div>
