@@ -1,6 +1,7 @@
 "use client";
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { SUPPORTED_NETWORKS } from "../constants"; // adjust the import path as needed
+import useWallet from "../hooks/useWallet";
 
 const TransferForm = () => {
   const [sourceChain, setSourceChain] = useState<string>(
@@ -11,7 +12,12 @@ const TransferForm = () => {
   );
   const [destinationAddress, setDestinationAddress] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
+  const {account} = useWallet();
 
+  useEffect(() => {
+    setDestinationAddress('');
+  }, [account]);
+  
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSourceChain(e.target.value);
   };
@@ -29,8 +35,8 @@ const TransferForm = () => {
   };
 
   const handleCopyAddress = () => {
-    // Implement functionality to copy from wallet
-  };
+    setDestinationAddress(account as string);
+};
 
   const handleAddMax = () => {
     // Implement functionality to add max amount
