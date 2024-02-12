@@ -1,26 +1,31 @@
 'use client';
 import React from 'react';
+import useWallet from '../hooks/useWallet'
+import WalletButton from './WalletButton';
+import NetworkButton from './NetworkButton';
 
 const Header = () => {
-  const handleConnectWallet = () => {
-    // Logic to connect wallet
-    console.log('Connect wallet');
-  };
+  const { connect, account } = useWallet();
 
   return (
-    <header className="bg-gradient-to-r from-blue-600 to-indigo-700 p-5">
-      <div className="container mx-auto flex items-center justify-between">
-        <div className="text-white text-2xl font-bold">
-          Cross-Chain Transfer Protocol
-        </div>
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg"
-          onClick={handleConnectWallet}
-        >
-          Connect Wallet
-        </button>
+    <header className="bg-gradient-to-r from-blue-800 via-blue-900 to-gray-900 p-5 shadow-md">
+    <div className="container mx-auto flex items-center justify-between">
+      <div className="text-white text-2xl font-bold">
+        Dollar Bridge
       </div>
-    </header>
+      <div className="flex items-center">
+        <NetworkButton />
+        <div className="ml-4">
+          {account && (
+            <div className="text-sm bg-red-600 px-3 py-1 rounded-full">
+              Unsupported Network
+            </div>
+          )}
+        </div>
+        <WalletButton />
+      </div>
+    </div>
+  </header>
   );
 };
 
