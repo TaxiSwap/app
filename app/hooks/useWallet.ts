@@ -59,6 +59,46 @@ const useWallet = () => {
     };
   }, [checkNetwork]);
 
+  const checkIfWalletIsConnected = useCallback(async () => {
+    if (window.ethereum) {
+      try {
+        // This method only checks for access and does not prompt a connection request
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const accounts = await provider.listAccounts();
+        if (accounts.length > 0) {
+          setAccount(accounts[0]);
+          const network = await provider.getNetwork();
+          setNetworkName(
+            SUPPORTED_NETWORKS[network.chainId.toString()] || UNSUPPORTED_NETWORK
+          );
+        } else {
+          // Handle the case where no accounts are connected
+          setAccount(null);
+          setNetworkName(UNSUPPORTED_NETWORK);
+        }
+      } catch (error) {
+        console.error("Error checking for wallet connection:", error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    checkIfWalletIsConnected();
+
+    if (window.ethereum) {
+      window.ethereum.on("chainChanged", (_: any) => checkNetwork());
+      window.ethereum.on("accountsChanged", checkIfWalletIsConnected);
+    }
+
+    return () => {
+      if (window.ethereum) {
+        window.ethereum.removeListener("chainChanged", checkNetwork);
+        window.ethereum.removeListener("accountsChanged", checkIfWalletIsConnected);
+      }
+    };
+  }, [checkIfWalletIsConnected, checkNetwork]);
+
+
   const switchNetwork = useCallback(
     async (chainId: string) => {
       try {
@@ -94,11 +134,8 @@ const useWallet = () => {
     },
     [checkNetwork]
   );
-  
-  useEffect(() => {
-    connect();
-  }, [connect]);
 
+ 
   return { account, connect, networkName, disconnect, switchNetwork };
 };
 
