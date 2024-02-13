@@ -9,7 +9,7 @@ const TransferForm = () => {
     Object.keys(SUPPORTED_NETWORKS)[0]
   );
   const [destinationChain, setDestinationChain] = useState<string>(
-    Object.keys(SUPPORTED_NETWORKS)[1]
+    Object.keys(SUPPORTED_NETWORKS)[0]
   );
   const [destinationAddress, setDestinationAddress] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
