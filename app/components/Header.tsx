@@ -3,6 +3,7 @@ import React from 'react';
 import useWallet from '../hooks/useWallet'
 import WalletButton from './WalletButton';
 import NetworkButton from './NetworkButton';
+import NetworkToggle from './NetworkToggle';
 
 const Header = () => {
   const { connect, account } = useWallet();
@@ -14,6 +15,7 @@ const Header = () => {
       Dollar Bridge
     </div>
     <div className="flex items-center space-x-3">
+      <NetworkToggle />
       <NetworkButton />
       <WalletButton />
     </div>

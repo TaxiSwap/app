@@ -1,11 +1,14 @@
-// components/NetworkButton.tsx
+'use client'
 import React, { useEffect, useState } from 'react';
 import useWallet from '../hooks/useWallet';
-import { SUPPORTED_NETWORKS, UNSUPPORTED_NETWORK } from '../constants';
+import { useNetworkConfigContext } from '../context/NetworkConfigContext'; 
+import { getConfig } from '../config/configLoader';
 
 const NetworkButton = () => {
-  const { networkName, switchNetwork, account } = useWallet();
+  const { networkName, switchNetwork, account, networkChainId } = useWallet();
+  const { networkType, toggleNetworkType } = useNetworkConfigContext();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const  config  = getConfig(networkType);
 
   const handleSwitch = (chainId: string) => {
     switchNetwork(chainId);
@@ -18,23 +21,24 @@ const NetworkButton = () => {
     }
   }, [account]);
 
+  // Determine if the current network is supported or not
+  const isSupportedNetwork = config && Object.keys(config.networks).includes(networkChainId?.toString() || "");
+
   return (
     <div className="relative inline-block text-left">
       <button
-        onClick={() => account && setDropdownOpen(!dropdownOpen)} // Only toggle dropdown if account is connected
+        onClick={() => account && setDropdownOpen(!dropdownOpen)}
         className={`px-4 py-2 rounded-full text-sm font-medium shadow-md border transition-colors duration-300 ${
-          networkName === UNSUPPORTED_NETWORK
-            ? 'bg-red-500 hover:bg-red-700 text-white'
-            : 'bg-blue-600 hover:bg-blue-700 text-white border-blue-800'
+          !isSupportedNetwork ? 'bg-red-500 hover:bg-red-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white border-blue-800'
         }`}
-        disabled={!account} // Disable button if no account is connected
+        disabled={!account}
       >
-        {account ? networkName : 'No Wallet Connected'}
+        {account ? (isSupportedNetwork ? networkName : "Unsupported Network") : 'No Wallet Connected'}
       </button>
-      {dropdownOpen && (
+      {dropdownOpen && config && (
         <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
           <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-            {Object.entries(SUPPORTED_NETWORKS).map(([chainId, name]) => (
+            {Object.entries(config.networks).map(([chainId, name]) => (
               <a
                 key={chainId}
                 href="#"

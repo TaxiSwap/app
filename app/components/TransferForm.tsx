@@ -1,28 +1,34 @@
 "use client";
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import { SUPPORTED_NETWORKS, NETWORK_PARAMS } from "../constants"; // adjust the import path as needed
 import useWallet from "../hooks/useWallet";
+import { useNetworkConfigContext } from "../context/NetworkConfigContext"; // adjust the import path as needed
+import { getConfig } from "../config/configLoader"; // Ensure this is correct
 import { SlArrowRight } from "react-icons/sl";
 
 const TransferForm = () => {
+  const { account, switchNetwork, networkChainId } = useWallet();
+  const { networkType } = useNetworkConfigContext(); // Assuming your context provides this
+  const config = getConfig(networkType); // Use the config based on the current network type
+
   const [sourceChain, setSourceChain] = useState<string>(
-    Object.keys(SUPPORTED_NETWORKS)[0]
+    Object.keys(config.networks)[0] // Initial state based on config
   );
   const [destinationChain, setDestinationChain] = useState<string>(
-    Object.keys(SUPPORTED_NETWORKS)[0]
+    Object.keys(config.networks)[0] // Initial state based on config
   );
   const [destinationAddress, setDestinationAddress] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
-  const { account, networkName, switchNetwork, networkChainId } = useWallet();
 
   useEffect(() => {
     setDestinationAddress("");
-    setSourceChain(networkChainId?.toString() || "1");
-  }, [account, networkChainId]);
+    setSourceChain(
+      networkChainId?.toString() || Object.keys(config.networks)[0]
+    );
+  }, [account, networkChainId, config.networks]); // Add config.networks to the dependency array
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedChainId = e.target.value;
-    if (selectedChainId !== sourceChain ) {
+    if (selectedChainId !== sourceChain) {
       switchNetwork(selectedChainId);
     }
     setSourceChain(e.target.value);
@@ -57,11 +63,10 @@ const TransferForm = () => {
     <div className="transfer-form bg-white p-8 rounded-lg text-gray-800 max-w-2xl mx-auto my-10 shadow">
       <h2 className="text-3xl font-bold mb-4">Transfer USDC across chains</h2>
       <p className="mb-8 text-gray-600">
-        Circle&apos;s Cross-Chain Transfer Protocol enables USDC to be sent across
-        blockchains without the need to be converted into an asset. All
+        Circle&apos;s Cross-Chain Transfer Protocol enables USDC to be sent
+        across blockchains without the need to be converted into an asset. All
         transfers are permissionless and executed on-chain.
       </p>
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-end mb-4">
           <div className="flex-grow">
@@ -73,13 +78,11 @@ const TransferForm = () => {
               onChange={handleSourceChange}
               className="mt-1 block w-full px-4 py-2 text-base font-normal bg-gray-200 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
             >
-              {Object.entries(SUPPORTED_NETWORKS).map(
-                ([chainId, networkName]) => (
-                  <option key={chainId} value={chainId}>
-                    {networkName}
-                  </option>
-                )
-              )}
+              {Object.entries(config.networks).map(([chainId, networkName]) => (
+                <option key={chainId} value={chainId}>
+                  {networkName}
+                </option>
+              ))}
             </select>
           </div>
           <SlArrowRight className="mx-4 text-4xl text-gray-600" />
@@ -92,13 +95,11 @@ const TransferForm = () => {
               onChange={handleDestinationChange}
               className="mt-1 block w-full px-4 py-2 text-base font-normal bg-gray-200 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
             >
-              {Object.entries(SUPPORTED_NETWORKS).map(
-                ([chainId, networkName]) => (
-                  <option key={chainId} value={chainId}>
-                    {networkName}
-                  </option>
-                )
-              )}
+              {Object.entries(config.networks).map(([chainId, networkName]) => (
+                <option key={chainId} value={chainId}>
+                  {networkName}
+                </option>
+              ))}
             </select>
           </div>
         </div>

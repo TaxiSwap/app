@@ -1,18 +1,23 @@
+'use client'
 import { useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
-import {
-  SUPPORTED_NETWORKS,
-  UNSUPPORTED_NETWORK,
-  NETWORK_PARAMS,
-} from "../constants";
+import { getConfig } from "../config/configLoader";
 
 declare let window: any;
 
 const useWallet = () => {
+  const [networkType, setNetworkType] = useState("mainnet");
+  const config = getConfig(networkType as 'mainnet' | 'testnet');
   const [account, setAccount] = useState<string | null>(null);
-  const [networkName, setNetworkName] = useState<string>(UNSUPPORTED_NETWORK);
+  const [networkName, setNetworkName] = useState<string>(config.UNSUPPORTED_NETWORK);
   const [networkChainId, setNetworkChainId] = useState<number | null>(null);
   
+  useEffect(() => {
+    // Safely access localStorage only after the component has mounted
+    const storedNetworkType = localStorage.getItem('networkType') === "testnet" ? "testnet" : "mainnet";
+    setNetworkType(storedNetworkType);
+  }, []);
+
   const disconnect = () => {
     setAccount(null);
   };
@@ -23,28 +28,26 @@ const useWallet = () => {
         const accounts = await provider.send("eth_requestAccounts", []);
         const network = await provider.getNetwork();
         setAccount(accounts[0]);
-        setNetworkName(
-          SUPPORTED_NETWORKS[network.chainId.toString()] || UNSUPPORTED_NETWORK
-        );
+        const networkConfigName = config.networks[network.chainId.toString()];
+        setNetworkName(networkConfigName || config.UNSUPPORTED_NETWORK);
         setNetworkChainId(network.chainId);
       } catch (error) {
         console.error("Error connecting to wallet:", error);
       }
     } else {
-      console.log("Ethereum object not found, install MetaMask.");
+      alert("Ethereum object not found, install MetaMask or other browser wallet.");
     }
-  }, []);
+  }, [config.UNSUPPORTED_NETWORK, config.networks]);
 
   const checkNetwork = useCallback(async () => {
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const network = await provider.getNetwork();
-      setNetworkName(
-        SUPPORTED_NETWORKS[network.chainId.toString()] || UNSUPPORTED_NETWORK
-      );
+      const networkConfigName = config.networks[network.chainId.toString()];
+      setNetworkName(networkConfigName || config.UNSUPPORTED_NETWORK);
       setNetworkChainId(network.chainId);
     }
-  }, []);
+  }, [config.UNSUPPORTED_NETWORK, config.networks]);
 
   useEffect(() => {
     if (window.ethereum) {
@@ -65,26 +68,23 @@ const useWallet = () => {
   const checkIfWalletIsConnected = useCallback(async () => {
     if (window.ethereum) {
       try {
-        // This method only checks for access and does not prompt a connection request
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const accounts = await provider.listAccounts();
         if (accounts.length > 0) {
           setAccount(accounts[0]);
           const network = await provider.getNetwork();
-          setNetworkName(
-            SUPPORTED_NETWORKS[network.chainId.toString()] || UNSUPPORTED_NETWORK
-          );
+          const networkConfigName = config.networks[network.chainId.toString()];
+          setNetworkName(networkConfigName || config.UNSUPPORTED_NETWORK);
           setNetworkChainId(network.chainId);
         } else {
-          // Handle the case where no accounts are connected
           setAccount(null);
-          setNetworkName(UNSUPPORTED_NETWORK);
+          setNetworkName(config.UNSUPPORTED_NETWORK);
         }
       } catch (error) {
         console.error("Error checking for wallet connection:", error);
       }
     }
-  }, []);
+  }, [config.UNSUPPORTED_NETWORK, config.networks]);
 
   useEffect(() => {
     checkIfWalletIsConnected();
@@ -118,10 +118,7 @@ const useWallet = () => {
         if (error.code === 4902) {
           try {
             // Ensure to provide the correctly formatted chainId for addition
-            const networkParams = {
-              ...NETWORK_PARAMS[chainId],
-              chainId: ethers.utils.hexValue(Number(chainId)),
-            };
+            const networkParams = config.network_params[chainId];
 
             await window.ethereum.request({
               method: "wallet_addEthereumChain",
@@ -136,7 +133,7 @@ const useWallet = () => {
         }
       }
     },
-    [checkNetwork]
+    [checkNetwork, config.network_params]
   );
 
  
