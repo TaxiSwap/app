@@ -11,6 +11,7 @@ declare let window: any;
 const useWallet = () => {
   const [account, setAccount] = useState<string | null>(null);
   const [networkName, setNetworkName] = useState<string>(UNSUPPORTED_NETWORK);
+  const [networkChainId, setNetworkChainId] = useState<number | null>(null);
   
   const disconnect = () => {
     setAccount(null);
@@ -25,6 +26,7 @@ const useWallet = () => {
         setNetworkName(
           SUPPORTED_NETWORKS[network.chainId.toString()] || UNSUPPORTED_NETWORK
         );
+        setNetworkChainId(network.chainId);
       } catch (error) {
         console.error("Error connecting to wallet:", error);
       }
@@ -40,6 +42,7 @@ const useWallet = () => {
       setNetworkName(
         SUPPORTED_NETWORKS[network.chainId.toString()] || UNSUPPORTED_NETWORK
       );
+      setNetworkChainId(network.chainId);
     }
   }, []);
 
@@ -71,6 +74,7 @@ const useWallet = () => {
           setNetworkName(
             SUPPORTED_NETWORKS[network.chainId.toString()] || UNSUPPORTED_NETWORK
           );
+          setNetworkChainId(network.chainId);
         } else {
           // Handle the case where no accounts are connected
           setAccount(null);
@@ -136,7 +140,7 @@ const useWallet = () => {
   );
 
  
-  return { account, connect, networkName, disconnect, switchNetwork };
+  return { account, connect, networkName, disconnect, switchNetwork, networkChainId };
 };
 
 export default useWallet;

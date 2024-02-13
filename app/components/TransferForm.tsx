@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import { SUPPORTED_NETWORKS } from "../constants"; // adjust the import path as needed
+import { SUPPORTED_NETWORKS, NETWORK_PARAMS } from "../constants"; // adjust the import path as needed
 import useWallet from "../hooks/useWallet";
 
 const TransferForm = () => {
@@ -12,14 +12,23 @@ const TransferForm = () => {
   );
   const [destinationAddress, setDestinationAddress] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
-  const {account} = useWallet();
+  const { account, networkName, switchNetwork, networkChainId } = useWallet();
 
   useEffect(() => {
     setDestinationAddress('');
-  }, [account]);
+    setSourceChain(networkChainId?.toString() || "1");
+  }, [account, networkChainId]);
+  
+   
   
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSourceChain(e.target.value);
+    
+    const selectedChainId = e.target.value;
+    if (selectedChainId !== sourceChain && NETWORK_PARAMS[selectedChainId]) {
+        const { chainId } = NETWORK_PARAMS[selectedChainId];
+        switchNetwork(chainId); 
+      }
+      setSourceChain(e.target.value);
   };
 
   const handleDestinationChange = (e: ChangeEvent<HTMLSelectElement>) => {
