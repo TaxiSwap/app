@@ -22,9 +22,8 @@ const TransferForm = () => {
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedChainId = e.target.value;
-    if (selectedChainId !== sourceChain && NETWORK_PARAMS[selectedChainId]) {
-      const { chainId } = NETWORK_PARAMS[selectedChainId];
-      switchNetwork(chainId);
+    if (selectedChainId !== sourceChain ) {
+      switchNetwork(selectedChainId);
     }
     setSourceChain(e.target.value);
   };
