@@ -1,20 +1,20 @@
 "use client";
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import useWallet from "../hooks/useWallet";
-import { useNetworkConfigContext } from "../context/NetworkConfigContext"; // adjust the import path as needed
-import { getConfig } from "../config/configLoader"; // Ensure this is correct
+import { useNetworkConfigContext } from "../context/NetworkConfigContext";
+import { getConfig } from "../config/configLoader";
 import { SlArrowRight } from "react-icons/sl";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId } = useWallet();
-  const { networkType } = useNetworkConfigContext(); // Assuming your context provides this
-  const config = getConfig(networkType); // Use the config based on the current network type
+  const { networkType } = useNetworkConfigContext();
+  const config = getConfig(networkType);
 
   const [sourceChain, setSourceChain] = useState<string>(
-    Object.keys(config.networks)[0] // Initial state based on config
+    Object.keys(config.networks)[0]
   );
   const [destinationChain, setDestinationChain] = useState<string>(
-    Object.keys(config.networks)[0] // Initial state based on config
+    Object.keys(config.networks)[0]
   );
   const [destinationAddress, setDestinationAddress] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
@@ -24,7 +24,7 @@ const TransferForm = () => {
     setSourceChain(
       networkChainId?.toString() || Object.keys(config.networks)[0]
     );
-  }, [account, networkChainId, config.networks]); // Add config.networks to the dependency array
+  }, [account, networkChainId, config.networks]);
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const selectedChainId = e.target.value;
