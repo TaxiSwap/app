@@ -24,8 +24,8 @@ const NetworkToggle = () => {
             checked={isTestnet} 
             onChange={toggleNetworkType} 
           />
-          <div className={`block w-14 h-8 rounded-full transition-colors duration-300 ${isTestnet ? 'bg-gray-600' : 'bg-blue-600'}`}></div>
-          <div className={`dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform duration-300 ${isTestnet ? 'transform translate-x-full' : ''}`}></div>
+          <div className={`block w-10 h-6 rounded-full transition-colors duration-300 ${isTestnet ? 'bg-gray-600' : 'bg-blue-600'}`}></div>
+          <div className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${isTestnet ? 'transform translate-x-4' : ''}`}></div>
         </div>
       </label>
 
