@@ -2,13 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { useWallet } from '../contexts/WalletContext';
 import { useNetworkConfigContext } from '../contexts/NetworkConfigContext'; 
-import { getConfig } from '../config/configLoader';
 
 const NetworkButton = () => {
   const { networkName, switchNetwork, account, networkChainId } = useWallet();
-  const { networkType, toggleNetworkType } = useNetworkConfigContext();
+  const { config } = useNetworkConfigContext();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const  config  = getConfig(networkType);
 
   const handleSwitch = (chainId: string) => {
     switchNetwork(chainId);
@@ -33,7 +31,7 @@ const NetworkButton = () => {
         }`}
         disabled={!account}
       >
-        {account ? (isSupportedNetwork ? networkName : "Unsupported Network") : 'No Wallet Connected'}
+        {account ? (isSupportedNetwork ? networkName : "Wrong Network") : 'No Wallet Connected'}
       </button>
       {dropdownOpen && config && (
         <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">

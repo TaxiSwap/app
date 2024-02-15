@@ -7,12 +7,12 @@ import { WalletProvider } from "./contexts/WalletContext";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
-      <WalletProvider>
-        <NetworkConfigProvider>
+      <NetworkConfigProvider>
+        <WalletProvider>
           <Header />
           <TransferForm />
-        </NetworkConfigProvider>
-      </WalletProvider>
+        </WalletProvider>
+      </NetworkConfigProvider>
     </div>
   );
 }

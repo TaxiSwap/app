@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { getConfig } from "../config/configLoader";
+import { useNetworkConfigContext } from '../contexts/NetworkConfigContext'; 
 
 declare let window: any;
 
@@ -21,7 +22,7 @@ const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [networkType, setNetworkType] = useState("mainnet");
-  const config = getConfig(networkType as 'mainnet' | 'testnet');
+  const { config } = useNetworkConfigContext()
   const [account, setAccount] = useState<string | null>(null);
   const [networkName, setNetworkName] = useState<string>(config.UNSUPPORTED_NETWORK);
   const [networkChainId, setNetworkChainId] = useState<number | null>(null);

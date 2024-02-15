@@ -1,18 +1,14 @@
 'use client'
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { NetworkConfig } from '../types/NetworkConfig';
+import { getConfig, NetworkConfig } from '../config/configLoader';
 
 interface NetworkConfigContextType {
   networkType: 'mainnet' | 'testnet';
+  config: NetworkConfig;
   toggleNetworkType: () => void;
 }
+const NetworkConfigContext = createContext<NetworkConfigContextType | undefined>(undefined);
 
-const defaultValue: NetworkConfigContextType = {
-  networkType: 'mainnet', // Default value
-  toggleNetworkType: () => {}, // Placeholder function
-};
-
-const NetworkConfigContext = createContext<NetworkConfigContextType>(defaultValue);
 
 export const NetworkConfigProvider = ({ children }: { children: ReactNode }) => {
   const [networkType, setNetworkType] = useState<'mainnet' | 'testnet'>('mainnet');
@@ -22,6 +18,8 @@ export const NetworkConfigProvider = ({ children }: { children: ReactNode }) => 
     setNetworkType(storedNetworkType as 'mainnet' | 'testnet');
   }, []);
 
+  const config = getConfig(networkType);
+
   const toggleNetworkType = () => {
     const newNetworkType = networkType === 'mainnet' ? 'testnet' : 'mainnet';
     setNetworkType(newNetworkType);
@@ -30,10 +28,16 @@ export const NetworkConfigProvider = ({ children }: { children: ReactNode }) => 
   };
 
   return (
-    <NetworkConfigContext.Provider value={{ networkType, toggleNetworkType }}>
+    <NetworkConfigContext.Provider value={{ networkType, config, toggleNetworkType }}>
       {children}
     </NetworkConfigContext.Provider>
   );
 };
 
-export const useNetworkConfigContext = () => useContext(NetworkConfigContext);
+export const useNetworkConfigContext = (): NetworkConfigContextType => {
+  const context = useContext(NetworkConfigContext);
+  if (context === undefined) {
+    throw new Error('useNetworkConfigContext must be used within a NetworkConfigProvider');
+  }
+  return context;
+};

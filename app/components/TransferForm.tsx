@@ -2,13 +2,11 @@
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useWallet } from "../contexts/WalletContext";
 import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
-import { getConfig } from "../config/configLoader";
 import { SlArrowRight } from "react-icons/sl";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId } = useWallet();
-  const { networkType } = useNetworkConfigContext();
-  const config = getConfig(networkType);
+  const { config } = useNetworkConfigContext();
 
   const [sourceChain, setSourceChain] = useState<string>(
     Object.keys(config.networks)[0]
