@@ -11,7 +11,7 @@ const Header = () => {
     <header className="bg-white p-5 shadow">
       <div className="container mx-auto flex items-center justify-between relative"> {/* Ensure positioning context is set */}
         <div className="text-gray-800 text-2xl font-bold">
-          Dollar Bridge
+          WhiteBridge
         </div>
         <div className="md:hidden">
           {/* Hamburger Icon */}
