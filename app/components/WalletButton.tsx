@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import useWallet from '../hooks/useWallet';
+import {useWallet} from '../contexts/WalletContext';
 
 const WalletButton = () => {
-    const { connect, disconnect, account } = useWallet();
+    const { connectWallet, disconnectWallet, account } = useWallet();
     const [showDropdown, setShowDropdown] = useState(false);
   
     const toggleDropdown = () => setShowDropdown(!showDropdown);
@@ -15,7 +15,7 @@ const WalletButton = () => {
       <div className="relative">
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg"
-          onClick={account ? toggleDropdown : connect}
+          onClick={account ? toggleDropdown : connectWallet}
         >
           {account ? formattedAccount : 'Connect Wallet'}
         </button>
@@ -26,7 +26,7 @@ const WalletButton = () => {
               className="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white"
               onClick={(e) => {
                 e.preventDefault();
-                disconnect();
+                disconnectWallet();
                 setShowDropdown(false);
               }}
             >

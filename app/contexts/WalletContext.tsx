@@ -1,16 +1,33 @@
 'use client'
-import { useCallback, useEffect, useState } from "react";
+import React, { createContext, useContext, useCallback, useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { getConfig } from "../config/configLoader";
 
 declare let window: any;
 
-const useWallet = () => {
+interface WalletContextType {
+  account: string | null;
+  networkName: string;
+  networkChainId: number | null;
+  provider: ethers.providers.Web3Provider | null;
+  signer: ethers.providers.JsonRpcSigner | null;
+  error: Error | null;
+  connectWallet: () => Promise<void>;
+  switchNetwork: (chainId: string ) => Promise<void>;
+  disconnectWallet: () => void;
+}
+
+const WalletContext = createContext<WalletContextType | undefined>(undefined);
+
+export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [networkType, setNetworkType] = useState("mainnet");
   const config = getConfig(networkType as 'mainnet' | 'testnet');
   const [account, setAccount] = useState<string | null>(null);
   const [networkName, setNetworkName] = useState<string>(config.UNSUPPORTED_NETWORK);
   const [networkChainId, setNetworkChainId] = useState<number | null>(null);
+  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
+  const [signer, setSigner] = useState<ethers.providers.JsonRpcSigner | null>(null);
+  const [error, setError] = useState<Error | null>(null);
   
   useEffect(() => {
     // Safely access localStorage only after the component has mounted
@@ -18,10 +35,15 @@ const useWallet = () => {
     setNetworkType(storedNetworkType);
   }, []);
 
-  const disconnect = () => {
+  const disconnectWallet = () => {
     setAccount(null);
+    setNetworkName("Unsupported Network");
+    setNetworkChainId(null);
+    setProvider(null);
+    setSigner(null);
+    setError(null);
   };
-  const connect = useCallback(async () => {
+  const connectWallet = useCallback(async () => {
     if (window.ethereum) {
       try {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -137,7 +159,30 @@ const useWallet = () => {
   );
 
  
-  return { account, connect, networkName, disconnect, switchNetwork, networkChainId };
+  return (
+    <WalletContext.Provider
+      value={{
+        account,
+        networkName,
+        networkChainId,
+        provider,
+        signer,
+        error,
+        connectWallet,
+        switchNetwork,
+        disconnectWallet,
+      }}
+    >
+      {children}
+    </WalletContext.Provider>
+  );
 };
 
-export default useWallet;
+export const useWallet = () => {
+  const context = useContext(WalletContext);
+  if (context === undefined) {
+    throw new Error("useWallet must be used within a WalletProvider");
+  }
+  return context;
+};
+

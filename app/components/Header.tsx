@@ -1,12 +1,10 @@
 'use client';
 import React, { useState } from 'react';
-import useWallet from '../hooks/useWallet';
 import WalletButton from './WalletButton';
 import NetworkButton from './NetworkButton';
 import NetworkToggle from './NetworkToggle';
 
 const Header = () => {
-  const { connect, account } = useWallet();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (

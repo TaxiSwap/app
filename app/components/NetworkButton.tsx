@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import useWallet from '../hooks/useWallet';
-import { useNetworkConfigContext } from '../context/NetworkConfigContext'; 
+import { useWallet } from '../contexts/WalletContext';
+import { useNetworkConfigContext } from '../contexts/NetworkConfigContext'; 
 import { getConfig } from '../config/configLoader';
 
 const NetworkButton = () => {

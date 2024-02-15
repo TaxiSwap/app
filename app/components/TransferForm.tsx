@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
-import useWallet from "../hooks/useWallet";
-import { useNetworkConfigContext } from "../context/NetworkConfigContext";
+import { useWallet } from "../contexts/WalletContext";
+import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
 import { getConfig } from "../config/configLoader";
 import { SlArrowRight } from "react-icons/sl";
 
