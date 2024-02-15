@@ -5,7 +5,7 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Dollar Bridge",
+  title: "WhiteBridge",
   description: "Bridge your USDC on the other side",
 };
 
