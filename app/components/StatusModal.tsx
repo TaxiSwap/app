@@ -30,7 +30,7 @@ interface StatusModalProps {
                 <div className="ml-4">
                   <div className="text-sm font-medium">{step.name}</div>
                   {step.status === 'working' && <span className="text-xs text-gray-500">Working... <span className="loader"></span></span>}
-                  {step.requiresWalletInteraction && <span className="text-xs text-blue-500">Check your wallet</span>}
+                  {step.status === 'working' && step.requiresWalletInteraction && <span className="text-xs text-blue-500">Check your wallet</span>}
                 </div>
               </li>
             ))}

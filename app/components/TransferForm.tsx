@@ -32,16 +32,15 @@ const TransferForm = () => {
   const [amount, setAmount] = useState<number>(0);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [stepStatuses, setStepStatuses] = useState<
-    Array<{ name: string; status: "pending" | "completed" | "working" }>
-  >([
-    { name: "Approve Token Transfer", status: "pending" },
-    { name: "Deposit Token", status: "pending" },
-    { name: "Get Message Hash", status: "pending" },
-    { name: "Wait for Attestation", status: "pending" },
-    { name: "Switch Network", status: "pending" },
-    { name: "Receive Tokens", status: "pending" },
+  const [stepStatuses, setStepStatuses] = useState([
+    { name: 'Approve Token Transfer', status: 'pending', requiresWalletInteraction: true },
+    { name: 'Deposit Token', status: 'pending', requiresWalletInteraction: true },
+    { name: 'Get Message Hash', status: 'pending', requiresWalletInteraction: false },
+    { name: 'Wait for Attestation', status: 'pending', requiresWalletInteraction: false },
+    { name: 'Switch Network', status: 'pending', requiresWalletInteraction: true },
+    { name: 'Receive Tokens', status: 'pending', requiresWalletInteraction: true },
   ]);
+  
   const [modalError, setModalError] = useState<string | undefined>();
 
   useEffect(() => {
@@ -173,12 +172,10 @@ const TransferForm = () => {
 
   return (
     <div className="transfer-form bg-white p-8 rounded-lg text-gray-800 max-w-2xl mx-auto my-10 shadow">
-       <StatusModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Transfer Progress" steps={stepStatuses} />
+       <StatusModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Transfer Progress" steps={stepStatuses} errorMessage={modalError} />
       <h2 className="text-3xl font-bold mb-4">Transfer USDC across chains</h2>
       <p className="mb-8 text-gray-600">
-        Circle&apos;s Cross-Chain Transfer Protocol enables USDC to be sent
-        across blockchains without the need to be converted into an asset. All
-        transfers are permissionless and executed on-chain.
+      Our USDC bridge simplifies cross-network transactions, offering a cost-effective and straightforward solution for transferring your digital currency. Designed for ease and efficiency, it ensures seamless and affordable transfers across chains, making it the go-to choice for managing your USDC assets.
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-end mb-4">
