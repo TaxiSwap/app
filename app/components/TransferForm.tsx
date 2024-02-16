@@ -42,6 +42,7 @@ const TransferForm = () => {
     { name: "Switch Network", status: "pending" },
     { name: "Receive Tokens", status: "pending" },
   ]);
+  const [modalError, setModalError] = useState<string | undefined>();
 
   useEffect(() => {
     setDestinationAddress("");
@@ -77,9 +78,16 @@ const TransferForm = () => {
     // Implement functionality to add max amount
   };
 
+  const openModalWithResetState = () => {
+    // Reset step statuses
+    setStepStatuses(stepStatuses.map(step => ({ ...step, status: 'pending' })));
+    setModalError(undefined); // Clear any previous error messages
+    setIsModalOpen(true);
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsModalOpen(true); // Open the modal to show progress
+    openModalWithResetState();
     let currentStep = 0; // To track the current step
   
     const updateStepStatus = (stepIndex: number, status: 'pending' | 'completed' | 'working') => {
@@ -150,14 +158,15 @@ const TransferForm = () => {
       updateStepStatus(currentStep, 'completed');
       
       // Optionally, close the modal after a delay or based on user interaction
-      setTimeout(() => setIsModalOpen(false), 2000); // Close modal after 2 seconds
+      // setTimeout(() => setIsModalOpen(false), 2000); // Close modal after 2 seconds
   
     } catch (error: unknown) {
       console.error(error);
       const message = error instanceof Error ? error.message : "Unknown error";
       showMessage(message, "error");
-      updateStepStatus(currentStep, 'pending'); // Optionally reset the current step status
-      // Keep the modal open for the user to see the error, or provide a way to close it
+      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      setModalError(errorMessage); // Set the error message state to be displayed in the modal
+      updateStepStatus(currentStep, 'error');
     }
   };
   
