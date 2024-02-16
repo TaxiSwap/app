@@ -120,5 +120,6 @@ export const mainnetConfig = {
         DOMAIN: 7
       }
   },
-  UNSUPPORTED_NETWORK: "UNSUPPORTED_NETWORK"
+  UNSUPPORTED_NETWORK: "UNSUPPORTED_NETWORK",
+  ATTESTATION_URL: "https://iris-api.circle.com"
 };

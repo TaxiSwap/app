@@ -28,6 +28,7 @@ export interface NetworkConfig {
     };
   };
   UNSUPPORTED_NETWORK: string;
+  ATTESTATION_URL: string;
 }
 
 export function getConfig(networkType: "mainnet" | "testnet"): NetworkConfig {
