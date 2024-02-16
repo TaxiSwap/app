@@ -3,12 +3,21 @@ import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useWallet } from "../contexts/WalletContext";
 import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
 import { SlArrowRight } from "react-icons/sl";
-import { approveTokenTransfer } from "../blockchain/actions";
-import { Signer, utils } from "ethers";
+import {
+  approveTokenTransfer,
+  depositForBurn,
+  callReceiveMessage,
+} from "../blockchain/actions";
+import { Signer, ethers, utils } from "ethers";
 import { useMessage } from "../contexts/MessageContext";
+import {
+  getMessageHashFromTransaction,
+  pollAttestationStatus,
+} from "../blockchain/utils";
 
 const TransferForm = () => {
-  const { account, switchNetwork, networkChainId, signer } = useWallet();
+  const { account, switchNetwork, networkChainId, signer, provider } =
+    useWallet();
   const { config } = useNetworkConfigContext();
   const { showMessage } = useMessage();
 
@@ -26,13 +35,12 @@ const TransferForm = () => {
     setSourceChain(
       networkChainId?.toString() || Object.keys(config.networks)[0]
     );
-  }, [account, networkChainId, config.networks]);
+    const initialDestinationChain =
+      networkChainId?.toString() || Object.keys(config.networks)[0];
+    setDestinationChain(initialDestinationChain);
+  }, [account, config.networks]);
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    const selectedChainId = e.target.value;
-    if (selectedChainId !== sourceChain) {
-      switchNetwork(selectedChainId);
-    }
     setSourceChain(e.target.value);
   };
 
@@ -61,19 +69,72 @@ const TransferForm = () => {
     if (networkChainId !== null) {
       const chainIdKey = String(networkChainId);
       const usdcAddress = config.contracts[chainIdKey]?.USDC_CONTRACT_ADDRESS;
-
+      console.log(
+        "Domain: ",
+        destinationChain,
+        config.contracts[destinationChain]?.DOMAIN
+      );
       if (usdcAddress) {
         try {
+          // Step 1: Approve token transfer (Sign with wallet)
           const approvalTx = await approveTokenTransfer(
             usdcAddress,
             config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
             utils.parseUnits(amount.toString(), 6),
             signer as Signer
           );
-          showMessage("Approval Succeed: " + approvalTx, "success");
+          showMessage("Approval Succeeded: " + approvalTx, "success");
+          // Step 2: Deposit token to contract (Sign with wallet)
+          const depositTx = await depositForBurn(
+            config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
+            utils.parseUnits(amount.toString(), 6),
+            config.contracts[destinationChain]?.DOMAIN,
+            destinationAddress,
+            usdcAddress,
+            signer as Signer
+          );
+          showMessage("Deposit succeeded: " + depositTx, "success");
+          // Step 3:  Get Message Hash
+          const { messageHash, messageBytes } =
+            await getMessageHashFromTransaction(
+              depositTx,
+              provider as ethers.providers.Provider
+            );
+          showMessage("Message Hash  succeeded: " + messageHash, "success");
+          console.log("Message hash: ", messageHash);
+          // Step 4: Wait for attestation
+          const attestationResponse = await pollAttestationStatus(
+            config.ATTESTATION_URL,
+            messageHash
+          );
+          console.log("Attestation response: ", attestationResponse);
+          // Step 5: Switch Network (Approve with wallet)
+          await switchNetwork(destinationChain);
+          // Step 6: Receive tokens
+          if (attestationResponse.attestation !== undefined) {
+            // You can safely use attestationResponse.attestation here as a string
+            const attestation: string = attestationResponse.attestation;
+            const receiveMessage = await callReceiveMessage(
+              config.contracts[destinationChain]
+                ?.MESSAGE_TRANSMITTER_CONTRACT_ADDRESS,
+              messageBytes,
+              attestation,
+              provider as ethers.providers.Provider,
+              signer as Signer
+            );
+            showMessage(
+              "Message receive  succeeded: " + receiveMessage,
+              "success"
+            );
+            console.log("Message receive hash: ", receiveMessage);
+          } else {
+            // Handle the case where attestation is undefined
+            console.error("Attestation is undefined");
+          }
         } catch (error: unknown) {
+          console.error(error);
           if (error instanceof Error) showMessage(error.message, "error");
-          else showMessage("Unknown approval error", "error");
+          else showMessage("Unknown error", "error");
         }
       } else {
         console.error(
