@@ -19,7 +19,14 @@ export interface NetworkConfig {
       blockExplorerUrls: string[];
     };
   };
-  contracts: {};
+  contracts: {
+    [key: string]: {
+      TOKEN_MESSENGER_CONTRACT_ADDRESS: string;
+      USDC_CONTRACT_ADDRESS: string;
+      MESSAGE_TRANSMITTER_CONTRACT_ADDRESS: string;
+      DOMAIN: number;
+    };
+  };
   UNSUPPORTED_NETWORK: string;
 }
 
