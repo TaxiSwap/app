@@ -47,9 +47,11 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const connectWallet = useCallback(async () => {
     if (window.ethereum) {
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
         const accounts = await provider.send("eth_requestAccounts", []);
         const network = await provider.getNetwork();
+        setProvider(provider);
+        setSigner(provider.getSigner());
         setAccount(accounts[0]);
         const networkConfigName = config.networks[network.chainId.toString()];
         setNetworkName(networkConfigName || config.UNSUPPORTED_NETWORK);
@@ -64,7 +66,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const checkNetwork = useCallback(async () => {
     if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
       const network = await provider.getNetwork();
       const networkConfigName = config.networks[network.chainId.toString()];
       setNetworkName(networkConfigName || config.UNSUPPORTED_NETWORK);
@@ -91,9 +93,11 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const checkIfWalletIsConnected = useCallback(async () => {
     if (window.ethereum) {
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
         const accounts = await provider.listAccounts();
         if (accounts.length > 0) {
+          setProvider(provider);
+          setSigner(provider.getSigner());
           setAccount(accounts[0]);
           const network = await provider.getNetwork();
           const networkConfigName = config.networks[network.chainId.toString()];
