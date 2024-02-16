@@ -14,6 +14,7 @@ import {
   getMessageHashFromTransaction,
   pollAttestationStatus,
 } from "../blockchain/utils";
+import StatusModal from "./StatusModal";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -29,6 +30,18 @@ const TransferForm = () => {
   );
   const [destinationAddress, setDestinationAddress] = useState<string>("");
   const [amount, setAmount] = useState<number>(0);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [stepStatuses, setStepStatuses] = useState<
+    Array<{ name: string; status: "pending" | "completed" | "working" }>
+  >([
+    { name: "Approve Token Transfer", status: "pending" },
+    { name: "Deposit Token", status: "pending" },
+    { name: "Get Message Hash", status: "pending" },
+    { name: "Wait for Attestation", status: "pending" },
+    { name: "Switch Network", status: "pending" },
+    { name: "Receive Tokens", status: "pending" },
+  ]);
 
   useEffect(() => {
     setDestinationAddress("");
@@ -64,91 +77,94 @@ const TransferForm = () => {
     // Implement functionality to add max amount
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (networkChainId !== null) {
+    setIsModalOpen(true); // Open the modal to show progress
+    let currentStep = 0; // To track the current step
+  
+    const updateStepStatus = (stepIndex: number, status: 'pending' | 'completed' | 'working') => {
+      setStepStatuses(prevStatuses =>
+        prevStatuses.map((step, index) => index === stepIndex ? {...step, status} : step)
+      );
+    };
+  
+    try {
+      if (networkChainId === null) throw new Error("Network chain ID is null.");
+  
       const chainIdKey = String(networkChainId);
       const usdcAddress = config.contracts[chainIdKey]?.USDC_CONTRACT_ADDRESS;
-      console.log(
-        "Domain: ",
-        destinationChain,
-        config.contracts[destinationChain]?.DOMAIN
+      if (!usdcAddress) throw new Error(`USDC contract address not found for the given networkChainId: ${networkChainId}`);
+  
+      // Step 1: Approve token transfer (Sign with wallet)
+      updateStepStatus(currentStep, 'working'); // Update status to working
+      const approvalTx = await approveTokenTransfer(
+        usdcAddress,
+        config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
+        utils.parseUnits(amount.toString(), 6),
+        signer as Signer
       );
-      if (usdcAddress) {
-        try {
-          // Step 1: Approve token transfer (Sign with wallet)
-          const approvalTx = await approveTokenTransfer(
-            usdcAddress,
-            config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
-            utils.parseUnits(amount.toString(), 6),
-            signer as Signer
-          );
-          showMessage("Approval Succeeded: " + approvalTx, "success");
-          // Step 2: Deposit token to contract (Sign with wallet)
-          const depositTx = await depositForBurn(
-            config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
-            utils.parseUnits(amount.toString(), 6),
-            config.contracts[destinationChain]?.DOMAIN,
-            destinationAddress,
-            usdcAddress,
-            signer as Signer
-          );
-          showMessage("Deposit succeeded: " + depositTx, "success");
-          // Step 3:  Get Message Hash
-          const { messageHash, messageBytes } =
-            await getMessageHashFromTransaction(
-              depositTx,
-              provider as ethers.providers.Provider
-            );
-          showMessage("Message Hash  succeeded: " + messageHash, "success");
-          console.log("Message hash: ", messageHash);
-          // Step 4: Wait for attestation
-          const attestationResponse = await pollAttestationStatus(
-            config.ATTESTATION_URL,
-            messageHash
-          );
-          console.log("Attestation response: ", attestationResponse);
-          // Step 5: Switch Network (Approve with wallet)
-          await switchNetwork(destinationChain);
-          // Step 6: Receive tokens
-          if (attestationResponse.attestation !== undefined) {
-            // You can safely use attestationResponse.attestation here as a string
-            const attestation: string = attestationResponse.attestation;
-            const receiveMessage = await callReceiveMessage(
-              config.contracts[destinationChain]
-                ?.MESSAGE_TRANSMITTER_CONTRACT_ADDRESS,
-              messageBytes,
-              attestation,
-              provider as ethers.providers.Provider,
-              signer as Signer
-            );
-            showMessage(
-              "Message receive  succeeded: " + receiveMessage,
-              "success"
-            );
-            console.log("Message receive hash: ", receiveMessage);
-          } else {
-            // Handle the case where attestation is undefined
-            console.error("Attestation is undefined");
-          }
-        } catch (error: unknown) {
-          console.error(error);
-          if (error instanceof Error) showMessage(error.message, "error");
-          else showMessage("Unknown error", "error");
-        }
-      } else {
-        console.error(
-          "USDC contract address not found for the given networkChainId:",
-          networkChainId
-        );
-      }
-    } else {
-      console.error("Network chain ID is null.");
+      showMessage("Approval Succeeded: " + approvalTx, "success");
+      updateStepStatus(currentStep++, 'completed'); // Update status to completed and move to next step
+  
+      // Step 2: Deposit token to contract (Sign with wallet)
+      updateStepStatus(currentStep, 'working');
+      const depositTx = await depositForBurn(
+        config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
+        utils.parseUnits(amount.toString(), 6),
+        config.contracts[destinationChain]?.DOMAIN,
+        destinationAddress,
+        usdcAddress,
+        signer as Signer
+      );
+      showMessage("Deposit succeeded: " + depositTx, "success");
+      updateStepStatus(currentStep++, 'completed');
+  
+      // Step 3: Get Message Hash
+      updateStepStatus(currentStep, 'working');
+      const { messageHash, messageBytes } = await getMessageHashFromTransaction(depositTx, provider as ethers.providers.Provider);
+      showMessage("Message Hash succeeded: " + messageHash, "success");
+      updateStepStatus(currentStep++, 'completed');
+  
+      // Step 4: Wait for attestation
+      updateStepStatus(currentStep, 'working');
+      const attestationResponse = await pollAttestationStatus(config.ATTESTATION_URL, messageHash);
+      updateStepStatus(currentStep++, 'completed');
+  
+      // Step 5: Switch Network (Approve with wallet)
+      updateStepStatus(currentStep, 'working');
+      await switchNetwork(destinationChain);
+      updateStepStatus(currentStep++, 'completed');
+  
+      // Step 6: Receive tokens
+      updateStepStatus(currentStep, 'working');
+      if (attestationResponse.attestation === undefined) throw new Error("Attestation is undefined");
+  
+      const receiveMessage = await callReceiveMessage(
+        config.contracts[destinationChain]?.MESSAGE_TRANSMITTER_CONTRACT_ADDRESS,
+        messageBytes,
+        attestationResponse.attestation,
+        provider as ethers.providers.Provider,
+        signer as Signer
+      );
+      showMessage("Message receive succeeded: " + receiveMessage, "success");
+      updateStepStatus(currentStep, 'completed');
+      
+      // Optionally, close the modal after a delay or based on user interaction
+      setTimeout(() => setIsModalOpen(false), 2000); // Close modal after 2 seconds
+  
+    } catch (error: unknown) {
+      console.error(error);
+      const message = error instanceof Error ? error.message : "Unknown error";
+      showMessage(message, "error");
+      updateStepStatus(currentStep, 'pending'); // Optionally reset the current step status
+      // Keep the modal open for the user to see the error, or provide a way to close it
     }
   };
+  
 
   return (
     <div className="transfer-form bg-white p-8 rounded-lg text-gray-800 max-w-2xl mx-auto my-10 shadow">
+       <StatusModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Transfer Progress" steps={stepStatuses} />
       <h2 className="text-3xl font-bold mb-4">Transfer USDC across chains</h2>
       <p className="mb-8 text-gray-600">
         Circle&apos;s Cross-Chain Transfer Protocol enables USDC to be sent
