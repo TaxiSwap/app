@@ -19,7 +19,7 @@ export const MessageProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTimeout(() => {
       setMessage('');
       setType('');
-    }, 15000); // Hide message after 15 seconds
+    }, 10000); // Hide message after 10 seconds
   }, []);
 
   return (
