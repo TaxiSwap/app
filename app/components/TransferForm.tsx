@@ -3,10 +3,14 @@ import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useWallet } from "../contexts/WalletContext";
 import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
 import { SlArrowRight } from "react-icons/sl";
+import { approveTokenTransfer } from "../blockchain/actions";
+import { Signer, utils } from "ethers";
+import { useMessage } from "../contexts/MessageContext";
 
 const TransferForm = () => {
-  const { account, switchNetwork, networkChainId } = useWallet();
+  const { account, switchNetwork, networkChainId, signer } = useWallet();
   const { config } = useNetworkConfigContext();
+  const { showMessage } = useMessage();
 
   const [sourceChain, setSourceChain] = useState<string>(
     Object.keys(config.networks)[0]
@@ -15,7 +19,7 @@ const TransferForm = () => {
     Object.keys(config.networks)[0]
   );
   const [destinationAddress, setDestinationAddress] = useState<string>("");
-  const [amount, setAmount] = useState<string>("");
+  const [amount, setAmount] = useState<number>(0);
 
   useEffect(() => {
     setDestinationAddress("");
@@ -41,7 +45,7 @@ const TransferForm = () => {
   };
 
   const handleAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
+    setAmount(Number(e.target.value));
   };
 
   const handleCopyAddress = () => {
@@ -52,9 +56,34 @@ const TransferForm = () => {
     // Implement functionality to add max amount
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Implement submit functionality
+    if (networkChainId !== null) {
+      const chainIdKey = String(networkChainId);
+      const usdcAddress = config.contracts[chainIdKey]?.USDC_CONTRACT_ADDRESS;
+
+      if (usdcAddress) {
+        try {
+          const approvalTx = await approveTokenTransfer(
+            usdcAddress,
+            config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
+            utils.parseUnits(amount.toString(), 6),
+            signer as Signer
+          );
+          showMessage("Approval Succeed: " + approvalTx, "success");
+        } catch (error: unknown) {
+          if (error instanceof Error) showMessage(error.message, "error");
+          else showMessage("Unknown approval error", "error");
+        }
+      } else {
+        console.error(
+          "USDC contract address not found for the given networkChainId:",
+          networkChainId
+        );
+      }
+    } else {
+      console.error("Network chain ID is null.");
+    }
   };
 
   return (
@@ -126,7 +155,7 @@ const TransferForm = () => {
           <span className="text-gray-700">Amount</span>
           <div className="mt-1 flex space-x-2">
             <input
-              type="text"
+              type="number"
               value={amount}
               onChange={handleAmountChange}
               placeholder="0.00"
