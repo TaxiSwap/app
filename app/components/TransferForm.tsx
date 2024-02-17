@@ -15,6 +15,7 @@ import {
   pollAttestationStatus,
 } from "../blockchain/utils";
 import { StatusModal, StatusModalProps } from "./StatusModal";
+import { useTransaction } from "../contexts/TransactionContext";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -32,38 +33,75 @@ const TransferForm = () => {
   const [amount, setAmount] = useState<number>(0);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [stepStatuses, setStepStatuses] = useState<StatusModalProps['steps']>([
-    {
-      name: "Approve Token Transfer",
-      status: "pending",
-      requiresWalletInteraction: true,
-    },
-    {
-      name: "Deposit Token",
-      status: "pending",
-      requiresWalletInteraction: true,
-    },
-    {
-      name: "Get Message Hash",
-      status: "pending",
-      requiresWalletInteraction: false,
-    },
-    {
-      name: "Wait for Attestation",
-      status: "pending",
-      requiresWalletInteraction: false,
-    },
-    {
-      name: "Switch Network",
-      status: "pending",
-      requiresWalletInteraction: true,
-    },
-    {
-      name: "Receive Tokens",
-      status: "pending",
-      requiresWalletInteraction: true,
-    },
-  ]);
+  const { steps, setSteps, updateStepStatus, resetSteps } = useTransaction();
+
+  useEffect(() => {
+    setSteps([
+      {
+        name: "Approve Token Transfer",
+        status: "pending",
+        requiresWalletInteraction: true,
+      },
+      {
+        name: "Deposit Token",
+        status: "pending",
+        requiresWalletInteraction: true,
+      },
+      {
+        name: "Get Message Hash",
+        status: "pending",
+        requiresWalletInteraction: false,
+      },
+      {
+        name: "Wait for Attestation",
+        status: "pending",
+        requiresWalletInteraction: false,
+      },
+      {
+        name: "Switch Network",
+        status: "pending",
+        requiresWalletInteraction: true,
+      },
+      {
+        name: "Receive Tokens",
+        status: "pending",
+        requiresWalletInteraction: true,
+      },
+    ]);
+  }, [setSteps]);
+
+  // const [stepStatuses, setStepStatuses] = useState<StatusModalProps["steps"]>([
+  //   {
+  //     name: "Approve Token Transfer",
+  //     status: "pending",
+  //     requiresWalletInteraction: true,
+  //   },
+  //   {
+  //     name: "Deposit Token",
+  //     status: "pending",
+  //     requiresWalletInteraction: true,
+  //   },
+  //   {
+  //     name: "Get Message Hash",
+  //     status: "pending",
+  //     requiresWalletInteraction: false,
+  //   },
+  //   {
+  //     name: "Wait for Attestation",
+  //     status: "pending",
+  //     requiresWalletInteraction: false,
+  //   },
+  //   {
+  //     name: "Switch Network",
+  //     status: "pending",
+  //     requiresWalletInteraction: true,
+  //   },
+  //   {
+  //     name: "Receive Tokens",
+  //     status: "pending",
+  //     requiresWalletInteraction: true,
+  //   },
+  // ]);
 
   const [modalError, setModalError] = useState<string | undefined>();
 
@@ -75,7 +113,7 @@ const TransferForm = () => {
     const initialDestinationChain =
       networkChainId?.toString() || Object.keys(config.networks)[0];
     setDestinationChain(initialDestinationChain);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, config.networks]);
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -104,9 +142,7 @@ const TransferForm = () => {
 
   const openModalWithResetState = () => {
     // Reset step statuses
-    setStepStatuses(
-      stepStatuses.map((step) => ({ ...step, status: "pending" }))
-    );
+    resetSteps();
     setModalError(undefined); // Clear any previous error messages
     setIsModalOpen(true);
   };
@@ -115,17 +151,6 @@ const TransferForm = () => {
     e.preventDefault();
     openModalWithResetState();
     let currentStep = 0; // To track the current step
-
-    const updateStepStatus = (
-      stepIndex: number,
-      status: "pending" | "completed" | "working" | "error"
-    ) => {
-      setStepStatuses((prevStatuses) =>
-        prevStatuses.map((step, index) =>
-          index === stepIndex ? { ...step, status } : step
-        )
-      );
-    };
 
     try {
       if (networkChainId === null) throw new Error("Network chain ID is null.");
@@ -218,7 +243,7 @@ const TransferForm = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Transfer Progress"
-        steps={stepStatuses}
+        steps={steps}
         errorMessage={modalError}
       />
       <h2 className="text-3xl font-bold mb-4">Transfer USDC across chains</h2>

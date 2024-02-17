@@ -4,6 +4,7 @@ import TransferForm from "./components/TransferForm";
 import { NetworkConfigProvider } from "./contexts/NetworkConfigContext";
 import { WalletProvider } from "./contexts/WalletContext";
 import { MessageProvider } from "./contexts/MessageContext";
+import { TransactionProvider } from "./contexts/TransactionContext";
 
 export default function Home() {
   return (
@@ -11,8 +12,10 @@ export default function Home() {
       <MessageProvider>
         <NetworkConfigProvider>
           <WalletProvider>
-            <Header />
-            <TransferForm />
+            <TransactionProvider>
+              <Header />
+              <TransferForm />
+            </TransactionProvider>
           </WalletProvider>
         </NetworkConfigProvider>
       </MessageProvider>
