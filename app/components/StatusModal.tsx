@@ -1,5 +1,4 @@
 import React from 'react';
-// StatusModal.tsx
 
 export interface StatusModalProps {
     isOpen: boolean;
@@ -45,4 +44,3 @@ export interface StatusModalProps {
     );
   };
   
-// export default StatusModal;
