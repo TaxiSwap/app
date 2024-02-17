@@ -1,7 +1,7 @@
 import React from 'react';
 // StatusModal.tsx
 
-interface StatusModalProps {
+export interface StatusModalProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
@@ -13,7 +13,7 @@ interface StatusModalProps {
     errorMessage?: string;
   }
   
-  const StatusModal: React.FC<StatusModalProps> = ({ isOpen, onClose, title, steps, errorMessage }) => {
+ export const StatusModal: React.FC<StatusModalProps> = ({ isOpen, onClose, title, steps, errorMessage }) => {
     if (!isOpen) return null;
   
     return (
@@ -45,4 +45,4 @@ interface StatusModalProps {
     );
   };
   
-export default StatusModal;
+// export default StatusModal;
