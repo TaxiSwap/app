@@ -7,13 +7,6 @@ export interface Step {
   requiresWalletInteraction?: boolean;
 }
 
-// interface TransactionContextType {
-//   steps: Step[];
-//   setSteps: React.Dispatch<React.SetStateAction<Step[]>>;
-//   updateStepStatus: (stepIndex: number, status: Step['status']) => void;
-//   resetSteps: () => void;
-// }
-
 type Action =
   | { type: 'SET_STEPS'; payload: Step[] }
   | { type: 'UPDATE_STEP_STATUS'; stepIndex: number; status: Step['status'] }
