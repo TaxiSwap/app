@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { useWallet } from "../contexts/WalletContext";
 import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
 import { SlArrowRight } from "react-icons/sl";
@@ -14,7 +14,7 @@ import {
   getMessageHashFromTransaction,
   pollAttestationStatus,
 } from "../blockchain/utils";
-import { StatusModal, StatusModalProps } from "./StatusModal";
+import { StatusModal } from "./StatusModal";
 import { useTransaction } from "../contexts/TransactionContext";
 
 const TransferForm = () => {
@@ -33,75 +33,7 @@ const TransferForm = () => {
   const [amount, setAmount] = useState<number>(0);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { steps, setSteps, updateStepStatus, resetSteps } = useTransaction();
-
-  useEffect(() => {
-    setSteps([
-      {
-        name: "Approve Token Transfer",
-        status: "pending",
-        requiresWalletInteraction: true,
-      },
-      {
-        name: "Deposit Token",
-        status: "pending",
-        requiresWalletInteraction: true,
-      },
-      {
-        name: "Get Message Hash",
-        status: "pending",
-        requiresWalletInteraction: false,
-      },
-      {
-        name: "Wait for Attestation",
-        status: "pending",
-        requiresWalletInteraction: false,
-      },
-      {
-        name: "Switch Network",
-        status: "pending",
-        requiresWalletInteraction: true,
-      },
-      {
-        name: "Receive Tokens",
-        status: "pending",
-        requiresWalletInteraction: true,
-      },
-    ]);
-  }, [setSteps]);
-
-  // const [stepStatuses, setStepStatuses] = useState<StatusModalProps["steps"]>([
-  //   {
-  //     name: "Approve Token Transfer",
-  //     status: "pending",
-  //     requiresWalletInteraction: true,
-  //   },
-  //   {
-  //     name: "Deposit Token",
-  //     status: "pending",
-  //     requiresWalletInteraction: true,
-  //   },
-  //   {
-  //     name: "Get Message Hash",
-  //     status: "pending",
-  //     requiresWalletInteraction: false,
-  //   },
-  //   {
-  //     name: "Wait for Attestation",
-  //     status: "pending",
-  //     requiresWalletInteraction: false,
-  //   },
-  //   {
-  //     name: "Switch Network",
-  //     status: "pending",
-  //     requiresWalletInteraction: true,
-  //   },
-  //   {
-  //     name: "Receive Tokens",
-  //     status: "pending",
-  //     requiresWalletInteraction: true,
-  //   },
-  // ]);
+  const { steps, dispatch } = useTransaction();
 
   const [modalError, setModalError] = useState<string | undefined>();
 
@@ -142,7 +74,7 @@ const TransferForm = () => {
 
   const openModalWithResetState = () => {
     // Reset step statuses
-    resetSteps();
+    dispatch({ type: "RESET_STEPS" });
     setModalError(undefined); // Clear any previous error messages
     setIsModalOpen(true);
   };
@@ -163,7 +95,11 @@ const TransferForm = () => {
         );
 
       // Step 1: Approve token transfer (Sign with wallet)
-      updateStepStatus(currentStep, "working"); // Update status to working
+      dispatch({
+        type: "UPDATE_STEP_STATUS",
+        stepIndex: currentStep,
+        status: "working",
+      });
       const approvalTx = await approveTokenTransfer(
         usdcAddress,
         config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
@@ -171,10 +107,18 @@ const TransferForm = () => {
         signer as Signer
       );
       showMessage("Approval Succeeded: " + approvalTx, "success");
-      updateStepStatus(currentStep++, "completed"); // Update status to completed and move to next step
+      dispatch({
+        type: "UPDATE_STEP_STATUS",
+        stepIndex: currentStep++,
+        status: "completed",
+      });
 
       // Step 2: Deposit token to contract (Sign with wallet)
-      updateStepStatus(currentStep, "working");
+      dispatch({
+        type: "UPDATE_STEP_STATUS",
+        stepIndex: currentStep,
+        status: "working",
+      });
       const depositTx = await depositForBurn(
         config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
         utils.parseUnits(amount.toString(), 6),
@@ -184,32 +128,48 @@ const TransferForm = () => {
         signer as Signer
       );
       showMessage("Deposit succeeded: " + depositTx, "success");
-      updateStepStatus(currentStep++, "completed");
+      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
 
       // Step 3: Get Message Hash
-      updateStepStatus(currentStep, "working");
+      dispatch({
+        type: "UPDATE_STEP_STATUS",
+        stepIndex: currentStep,
+        status: "working",
+      });
       const { messageHash, messageBytes } = await getMessageHashFromTransaction(
         depositTx,
         provider as ethers.providers.Provider
       );
       showMessage("Message Hash succeeded: " + messageHash, "success");
-      updateStepStatus(currentStep++, "completed");
+      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
 
       // Step 4: Wait for attestation
-      updateStepStatus(currentStep, "working");
+      dispatch({
+        type: "UPDATE_STEP_STATUS",
+        stepIndex: currentStep,
+        status: "working",
+      });
       const attestationResponse = await pollAttestationStatus(
         config.ATTESTATION_URL,
         messageHash
       );
-      updateStepStatus(currentStep++, "completed");
+      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
 
       // Step 5: Switch Network (Approve with wallet)
-      updateStepStatus(currentStep, "working");
+      dispatch({
+        type: "UPDATE_STEP_STATUS",
+        stepIndex: currentStep,
+        status: "working",
+      });
       await switchNetwork(destinationChain);
-      updateStepStatus(currentStep++, "completed");
+      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
 
       // Step 6: Receive tokens
-      updateStepStatus(currentStep, "working");
+      dispatch({
+        type: "UPDATE_STEP_STATUS",
+        stepIndex: currentStep,
+        status: "working",
+      });
       if (attestationResponse.attestation === undefined)
         throw new Error("Attestation is undefined");
 
@@ -222,10 +182,8 @@ const TransferForm = () => {
         signer as Signer
       );
       showMessage("Message receive succeeded: " + receiveMessage, "success");
-      updateStepStatus(currentStep, "completed");
+      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
 
-      // Optionally, close the modal after a delay or based on user interaction
-      // setTimeout(() => setIsModalOpen(false), 2000); // Close modal after 2 seconds
     } catch (error: unknown) {
       console.error(error);
       const message = error instanceof Error ? error.message : "Unknown error";
@@ -233,7 +191,11 @@ const TransferForm = () => {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
       setModalError(errorMessage); // Set the error message state to be displayed in the modal
-      updateStepStatus(currentStep, "error");
+      dispatch({
+        type: "UPDATE_STEP_STATUS",
+        stepIndex: currentStep,
+        status: "error",
+      });
     }
   };
 
