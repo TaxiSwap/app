@@ -33,11 +33,6 @@ export async function depositForBurn(
   tokenAddress: string,
   signer: ethers.Signer
 ) {
-  const tokenMessengerContract = new ethers.Contract(
-    tokenMessengerAddress,
-    tokenMessengerAbi,
-    signer
-  );
 
   const whiteBridgeContract = new ethers.Contract(
     tokenMessengerAddress,
