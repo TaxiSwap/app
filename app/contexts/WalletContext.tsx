@@ -10,8 +10,8 @@ interface WalletContextType {
   account: string | null;
   networkName: string;
   networkChainId: number | null;
-  provider: ethers.providers.Web3Provider | null;
-  signer: ethers.providers.JsonRpcSigner | null;
+  provider: ethers.BrowserProvider | null;
+  signer: ethers.JsonRpcSigner | null;
   error: Error | null;
   connectWallet: () => Promise<void>;
   switchNetwork: (chainId: string ) => Promise<void>;
@@ -26,8 +26,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [account, setAccount] = useState<string | null>(null);
   const [networkName, setNetworkName] = useState<string>(config.UNSUPPORTED_NETWORK);
   const [networkChainId, setNetworkChainId] = useState<number | null>(null);
-  const [provider, setProvider] = useState<ethers.providers.Web3Provider | null>(null);
-  const [signer, setSigner] = useState<ethers.providers.JsonRpcSigner | null>(null);
+  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
+  const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
   const [error, setError] = useState<Error | null>(null);
   
   useEffect(() => {
@@ -47,15 +47,15 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const connectWallet = useCallback(async () => {
     if (window.ethereum) {
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+        const provider = new ethers.BrowserProvider(window.ethereum, 'any');
         const accounts = await provider.send("eth_requestAccounts", []);
         const network = await provider.getNetwork();
         setProvider(provider);
-        setSigner(provider.getSigner());
+        setSigner(await provider.getSigner());
         setAccount(accounts[0]);
         const networkConfigName = config.networks[network.chainId.toString()];
         setNetworkName(networkConfigName || config.UNSUPPORTED_NETWORK);
-        setNetworkChainId(network.chainId);
+        setNetworkChainId(Number(network.chainId));
       } catch (error) {
         console.error("Error connecting to wallet:", error);
       }
@@ -66,11 +66,11 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const checkNetwork = useCallback(async () => {
     if (window.ethereum) {
-      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+      const provider = new ethers.BrowserProvider(window.ethereum, 'any');
       const network = await provider.getNetwork();
       const networkConfigName = config.networks[network.chainId.toString()];
       setNetworkName(networkConfigName || config.UNSUPPORTED_NETWORK);
-      setNetworkChainId(network.chainId);
+      setNetworkChainId(Number(network.chainId));
     }
   }, [config.UNSUPPORTED_NETWORK, config.networks]);
 
@@ -93,16 +93,16 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const checkIfWalletIsConnected = useCallback(async () => {
     if (window.ethereum) {
       try {
-        const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
-        const accounts = await provider.listAccounts();
-        if (accounts.length > 0) {
+        const provider = new ethers.BrowserProvider(window.ethereum, 'any');
+        const account = await provider.getSigner();
+        if (account.address.length > 0) {
           setProvider(provider);
-          setSigner(provider.getSigner());
-          setAccount(accounts[0]);
+          setSigner(await provider.getSigner());
+          setAccount(account.address || null);
           const network = await provider.getNetwork();
           const networkConfigName = config.networks[network.chainId.toString()];
           setNetworkName(networkConfigName || config.UNSUPPORTED_NETWORK);
-          setNetworkChainId(network.chainId);
+          setNetworkChainId(Number(network.chainId));
         } else {
           setAccount(null);
           setNetworkName(config.UNSUPPORTED_NETWORK);
@@ -134,7 +134,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     async (chainId: string) => {
       try {
         // Ensure the chainId is in the correct hexadecimal format
-        const formattedChainId = ethers.utils.hexValue(Number(chainId));
+        const formattedChainId = ethers.toQuantity(Number(chainId));
 
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",

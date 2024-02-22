@@ -8,7 +8,7 @@ import {
   depositForBurn,
   callReceiveMessage,
 } from "../blockchain/actions";
-import { Signer, ethers, utils } from "ethers";
+import { Signer, ethers } from "ethers";
 import { useMessage } from "../contexts/MessageContext";
 import {
   getMessageHashFromTransaction,
@@ -103,7 +103,7 @@ const TransferForm = () => {
       const approvalTx = await approveTokenTransfer(
         usdcAddress,
         config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
-        utils.parseUnits(amount.toString(), 6),
+        ethers.parseUnits(amount.toString(), 6),
         signer as Signer
       );
       showMessage("Approval Succeeded: " + approvalTx, "success");
@@ -121,7 +121,7 @@ const TransferForm = () => {
       });
       const depositTx = await depositForBurn(
         config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
-        utils.parseUnits(amount.toString(), 6),
+        ethers.parseUnits(amount.toString(), 6),
         config.contracts[destinationChain]?.DOMAIN,
         destinationAddress,
         usdcAddress,
@@ -138,7 +138,7 @@ const TransferForm = () => {
       });
       const { messageHash, messageBytes } = await getMessageHashFromTransaction(
         depositTx,
-        provider as ethers.providers.Provider
+        provider as ethers.Provider
       );
       showMessage("Message Hash succeeded: " + messageHash, "success");
       dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
@@ -178,7 +178,7 @@ const TransferForm = () => {
           ?.MESSAGE_TRANSMITTER_CONTRACT_ADDRESS,
         messageBytes,
         attestationResponse.attestation,
-        provider as ethers.providers.Provider,
+        provider as ethers.Provider,
         signer as Signer
       );
       showMessage("Message receive succeeded: " + receiveMessage, "success");

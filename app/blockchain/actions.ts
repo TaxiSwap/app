@@ -1,4 +1,4 @@
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
 import erc20abi from "./contracts/erc20.abi.json";
 import tokenMessengerAbi from "./contracts/tokenMessenger.abi.json";
 import messageTransmitterAbi from "./contracts/MessageTransmitter.abi.json";
@@ -9,14 +9,13 @@ import { addressToBytes32 } from "./utils";
 export async function approveTokenTransfer(
   tokenAddress: string,
   spenderAddress: string,
-  amount: BigNumber,
+  amount: BigInt,
   signer: ethers.Signer
 ) {
   const tokenContract = new ethers.Contract(tokenAddress, erc20abi, signer);
 
   try {
     const tx = await tokenContract
-      .connect(signer)
       .approve(spenderAddress, amount);
     await tx.wait();
     return tx.hash;
@@ -27,7 +26,7 @@ export async function approveTokenTransfer(
 
 export async function depositForBurn(
   tokenMessengerAddress: string,
-  amount: BigNumber,
+  amount: BigInt,
   destinationDomain: number,
   destinationAddress: string,
   tokenAddress: string,
@@ -42,7 +41,6 @@ export async function depositForBurn(
 
   try {
     const tx = await whiteBridgeContract
-      .connect(signer)
       .sendMessage(
         amount,
         destinationDomain,
@@ -60,7 +58,7 @@ export async function callReceiveMessage(
   contractAddress: string,
   receivingMessageBytes: string,
   signature: string,
-  provider: ethers.providers.Provider,
+  provider: ethers.Provider,
   signer: ethers.Signer
 ) {
   const messageTransmitterContract = new ethers.Contract(
@@ -69,7 +67,6 @@ export async function callReceiveMessage(
     signer
   );
   const receiveTx = await messageTransmitterContract
-    .connect(signer)
     .receiveMessage(receivingMessageBytes, signature);
   return receiveTx.hash;
 }
