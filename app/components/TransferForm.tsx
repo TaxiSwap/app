@@ -102,7 +102,7 @@ const TransferForm = () => {
       });
       const approvalTx = await approveTokenTransfer(
         usdcAddress,
-        config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
+        config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
         utils.parseUnits(amount.toString(), 6),
         signer as Signer
       );
@@ -120,7 +120,7 @@ const TransferForm = () => {
         status: "working",
       });
       const depositTx = await depositForBurn(
-        config.contracts[sourceChain]?.TOKEN_MESSENGER_CONTRACT_ADDRESS,
+        config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
         utils.parseUnits(amount.toString(), 6),
         config.contracts[destinationChain]?.DOMAIN,
         destinationAddress,
