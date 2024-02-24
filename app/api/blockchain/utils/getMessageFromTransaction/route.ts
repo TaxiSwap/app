@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { getMessageHashFromTransaction } from "../../../../blockchain/utils";
-import { chainProviders } from "../../../../config/chainProviders";
+import { chainConfigs } from "../../../../config/ChainConfigMap";
 
 export async function POST(request: Request) {
   try {
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const providerUrl = chainProviders[chainId];
+    const providerUrl = chainConfigs[chainId]?.providerUrl;
     if (!providerUrl) {
       return new Response(
         JSON.stringify({
