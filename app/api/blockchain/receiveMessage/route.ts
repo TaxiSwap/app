@@ -69,16 +69,12 @@ export async function POST(request: Request) {
       messageBytes,
       attestationResponse.attestation
     );
-
-    return new Response(
-      JSON.stringify({
-        receiveTx,
-      }),
-      {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    await receiveTx.wait();
+    console.log("receiptTx: ", receiveTx.hash);
+    return new Response(JSON.stringify({ hash: receiveTx.hash }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error: any) {
     return new Response(
       JSON.stringify({
