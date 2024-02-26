@@ -6,14 +6,9 @@ import { SlArrowRight } from "react-icons/sl";
 import {
   approveTokenTransfer,
   depositForBurn,
-  callReceiveMessage,
 } from "../blockchain/actions";
 import { Signer, ethers } from "ethers";
 import { useMessage } from "../contexts/MessageContext";
-import {
-  getMessageHashFromTransaction,
-  pollAttestationStatus,
-} from "../blockchain/utils";
 import { StatusModal } from "./StatusModal";
 import { useTransaction } from "../contexts/TransactionContext";
 
@@ -128,69 +123,46 @@ const TransferForm = () => {
         signer as Signer
       );
       showMessage("Deposit succeeded: " + depositTx, "success");
-      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
-
-      // Step 3: Get Message Hash
       dispatch({
         type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep,
-        status: "working",
+        stepIndex: currentStep++,
+        status: "completed",
       });
-      const { messageHash, messageBytes } = await getMessageHashFromTransaction(
-        depositTx,
-        provider as ethers.Provider
-      );
-      showMessage("Message Hash succeeded: " + messageHash, "success");
-      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
 
-      // Step 4: Wait for attestation
-      dispatch({
-        type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep,
-        status: "working",
-      });
-      const attestationResponse = await pollAttestationStatus(
-        config.ATTESTATION_URL,
-        messageHash
-      );
-      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
+      try {
+        const response = await fetch("/api/blockchain/receiveMessage", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            depositTx,
+            sourceChain,
+            destinationChain,
+          }),
+        });
+        const data = await response.json(); 
 
-      // Step 5: Switch Network (Approve with wallet)
-      dispatch({
-        type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep,
-        status: "working",
-      });
-      await switchNetwork(destinationChain);
-      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
-
-      // Step 6: Receive tokens
-      dispatch({
-        type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep,
-        status: "working",
-      });
-      if (attestationResponse.attestation === undefined)
-        throw new Error("Attestation is undefined");
-
-      const receiveMessage = await callReceiveMessage(
-        config.contracts[destinationChain]
-          ?.MESSAGE_TRANSMITTER_CONTRACT_ADDRESS,
-        messageBytes,
-        attestationResponse.attestation,
-        provider as ethers.Provider,
-        signer as Signer
-      );
-      showMessage("Message receive succeeded: " + receiveMessage, "success");
-      dispatch({ type: 'UPDATE_STEP_STATUS', stepIndex: currentStep++, status: 'completed' });
-
+        if (response.ok) {
+          showMessage("Message receive succeeded: " + data.hash, "success");
+        } else {
+          throw new Error(data.error || "Unknown Error");
+        }
+        dispatch({
+          type: "UPDATE_STEP_STATUS",
+          stepIndex: currentStep++,
+          status: "completed",
+        });
+      } catch (error: unknown) {
+        if (error instanceof Error) throw new Error(error.message);
+        throw Error("Unexpected Error on receive!");
+      }
     } catch (error: unknown) {
-      console.error(error);
       const message = error instanceof Error ? error.message : "Unknown error";
       showMessage(message, "error");
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
-      setModalError(errorMessage); // Set the error message state to be displayed in the modal
+      setModalError(errorMessage); 
       dispatch({
         type: "UPDATE_STEP_STATUS",
         stepIndex: currentStep,
