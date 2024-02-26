@@ -20,10 +20,7 @@ interface TransactionContextType {
 const initialSteps: Step[] = [
   { name: "Approve Tokens", status: "pending", requiresWalletInteraction: true },
   { name: "Deposit Tokens", status: "pending", requiresWalletInteraction: true },
-  { name: "Get Message Hash", status: "pending" },
-  { name: "Wait Attestation", status: "pending" },
-  { name: "Switch Network", status: "pending", requiresWalletInteraction: true },
-  { name: "Receive Tokens", status: "pending", requiresWalletInteraction: true },
+  { name: "Wait for transfer. This might take a while", status: "pending" },
 ];
 
 function reducer(state: Step[], action: Action): Step[] {
