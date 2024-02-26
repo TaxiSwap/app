@@ -129,6 +129,12 @@ const TransferForm = () => {
         status: "completed",
       });
 
+      dispatch({
+        type: "UPDATE_STEP_STATUS",
+        stepIndex: currentStep,
+        status: "working",
+      });
+
       try {
         const response = await fetch("/api/blockchain/receiveMessage", {
           method: "POST",
