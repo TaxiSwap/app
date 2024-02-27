@@ -18,6 +18,7 @@ const TransferForm = () => {
   const { config } = useNetworkConfigContext();
   const { showMessage } = useMessage();
 
+
   const [sourceChain, setSourceChain] = useState<string>(
     Object.keys(config.networks)[0]
   );
@@ -31,6 +32,23 @@ const TransferForm = () => {
   const { steps, dispatch } = useTransaction();
 
   const [modalError, setModalError] = useState<string | undefined>();
+
+   // state to track if all steps are completed or an error occurred
+   const [canClose, setCanClose] = useState(false);
+
+  useEffect(() => {
+    // Reset when modal is closed
+    if (!isModalOpen) {
+      setCanClose(false);
+    }
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    // Determine if all steps are completed or if there's an error
+    const allStepsCompleted = steps.every(step => step.status === 'completed');
+    const hasError = modalError !== undefined;
+    setCanClose(allStepsCompleted || hasError);
+  }, [steps, modalError]);
 
   useEffect(() => {
     setDestinationAddress("");
@@ -185,6 +203,7 @@ const TransferForm = () => {
         title="Transfer Progress"
         steps={steps}
         errorMessage={modalError}
+        canClose={canClose}
       />
       <h2 className="text-3xl font-bold mb-4">Transfer USDC across chains</h2>
       <p className="mb-8 text-gray-600">

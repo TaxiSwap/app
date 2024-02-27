@@ -10,6 +10,7 @@ export interface StatusModalProps {
     requiresWalletInteraction?: boolean;
   }>;
   errorMessage?: string;
+  canClose: boolean
 }
 
 export const StatusModal: React.FC<StatusModalProps> = ({
@@ -18,6 +19,7 @@ export const StatusModal: React.FC<StatusModalProps> = ({
   title,
   steps,
   errorMessage,
+  canClose
 }) => {
   if (!isOpen) return null;
 
@@ -84,6 +86,8 @@ export const StatusModal: React.FC<StatusModalProps> = ({
         <div className="flex justify-end">
           <button
             onClick={onClose}
+            disabled={!canClose}
+            hidden={!canClose}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition ease-in-out duration-150"
           >
             Close
