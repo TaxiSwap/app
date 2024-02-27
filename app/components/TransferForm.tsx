@@ -38,12 +38,21 @@ const TransferForm = () => {
   const [userBalance, setUserBalance] = useState(0);
 
   const [showNetworkWarning, setShowNetworkWarning] = useState(false);
+  const [isAddressValid, setIsAddressValid] = useState(true);
 
   useEffect(() => {
     // Check if the source chain matches the wallet's network
     const isMismatch = networkChainId?.toString() !== sourceChain;
-    if (account) setShowNetworkWarning(isMismatch);
-  }, [sourceChain, networkChainId, account]);
+    if (account) {
+      setShowNetworkWarning(isMismatch);
+      console.log("destinationAddress:" , destinationAddress, typeof(destinationAddress), !!destinationAddress )
+      setIsAddressValid(
+        !!destinationAddress  &&
+          destinationAddress !== "0x0000000000000000000000000000000000000000" &&
+          ethers.isAddress(destinationAddress)
+      );
+    }
+  }, [sourceChain, networkChainId, account, destinationAddress]);
 
   useEffect(() => {
     // Reset when modal is closed
@@ -347,6 +356,11 @@ const TransferForm = () => {
 
         <label className="block">
           <span className="text-gray-700">Destination Address</span>
+          {!isAddressValid && (
+            <span className="text-red-500 text-xs">
+              Please enter a valid address.
+            </span>
+          )}
           <div className="mt-1 relative">
             <input
               type="text"
