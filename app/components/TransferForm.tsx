@@ -37,6 +37,14 @@ const TransferForm = () => {
 
   const [userBalance, setUserBalance] = useState(0);
 
+  const [showNetworkWarning, setShowNetworkWarning] = useState(false);
+
+  useEffect(() => {
+    // Check if the source chain matches the wallet's network
+    const isMismatch = networkChainId?.toString() !== sourceChain;
+    if (account) setShowNetworkWarning(isMismatch);
+  }, [sourceChain, networkChainId, account]);
+
   useEffect(() => {
     // Reset when modal is closed
     if (!isModalOpen) {
@@ -71,20 +79,31 @@ const TransferForm = () => {
   }, [account, config.networks]);
 
   useEffect(() => {
-    console.log("into effect")
+    if (networkChainId?.toString() !== sourceChain) return;
     const fetchBalance = async () => {
       try {
-        console.log("fetching balance")
-          const balance = await getTokenBalance(account as string, config.contracts[sourceChain]?.USDC_CONTRACT_ADDRESS, provider as Provider);
-          setUserBalance(balance);
+        const balance = await getTokenBalance(
+          account as string,
+          config.contracts[sourceChain]?.USDC_CONTRACT_ADDRESS,
+          provider as Provider
+        );
+        setUserBalance(balance);
       } catch (error) {
-          console.error('Failed to fetch token balance:', error);
-          setUserBalance(0);
+        console.error("Failed to fetch token balance:", error);
+        setUserBalance(0);
       }
-  };
-  fetchBalance();
-  }, [account, config.contracts, config.networks, provider, sourceChain, isModalOpen]);
-  
+    };
+    if (!showNetworkWarning) fetchBalance();
+  }, [
+    account,
+    config.contracts,
+    config.networks,
+    provider,
+    sourceChain,
+    isModalOpen,
+    showNetworkWarning,
+    networkChainId,
+  ]);
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const newSourceChain = e.target.value;
@@ -133,6 +152,17 @@ const TransferForm = () => {
 
   const handleAddMax = () => {
     // Implement functionality to add max amount
+  };
+
+  const handleNetworkSwitch = async () => {
+    try {
+      // Assuming `sourceChain` is your desired chain ID to switch to
+      await switchNetwork(sourceChain);
+      // Optionally, show a success message or perform some action after successfully switching networks
+    } catch (error) {
+      console.error("Failed to switch network:", error);
+      // Handle or display the error appropriately
+    }
   };
 
   const openModalWithResetState = () => {
@@ -270,6 +300,20 @@ const TransferForm = () => {
             <label className="block text-sm font-medium text-gray-700">
               From
             </label>
+            {showNetworkWarning && (
+              <div className="text-red-500 text-xs mt-2">
+                Warning:
+                <button
+                  className="ml-2 text-blue-500 text-xs"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    handleNetworkSwitch();
+                  }}
+                >
+                  Switch Wallet Network
+                </button>
+              </div>
+            )}
             <select
               value={sourceChain}
               onChange={handleSourceChange}
@@ -322,27 +366,28 @@ const TransferForm = () => {
         </label>
 
         <label className="block">
-            <span className="text-gray-700">Amount</span>
-            <div className="mt-1 relative">
-                <input
-                    type="number"
-                    value={amount}
-                    onChange={handleAmountChange}
-                    placeholder="0.00"
-                    className="form-input w-full py-2 bg-gray-200 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                />
-                <div className="flex justify-between items-center mt-2">
-                    {/* Balance information and ADD MAX button are now in a flex container */}
-                    <span className="text-gray-500 text-sm">Balance: ${userBalance}</span>
-                    <button
-                        type="button"
-                        onClick={handleAddMax}
-                        className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-3 py-1"
-                    >
-                        ADD MAX
-                    </button>
-                </div>
+          <span className="text-gray-700">Amount</span>
+          <div className="mt-1 relative">
+            <input
+              type="number"
+              value={amount}
+              onChange={handleAmountChange}
+              placeholder="0.00"
+              className="form-input w-full py-2 bg-gray-200 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+            />
+            <div className="flex justify-between items-center mt-2">
+              <span className="text-gray-500 text-sm">
+                Balance: ${userBalance}
+              </span>
+              <button
+                type="button"
+                onClick={handleAddMax}
+                className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-3 py-1"
+              >
+                ADD MAX
+              </button>
             </div>
+          </div>
         </label>
 
         <button className="w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none shadow transition duration-300">
