@@ -37,7 +37,7 @@ const TransferForm = () => {
 
   const [userBalance, setUserBalance] = useState(0);
 
-  const [showNetworkWarning, setShowNetworkWarning] = useState(false);
+  const [isSourceNetworkAsWallet, setIsSourceNetworkAsWallet] = useState(false);
   const [isAddressValid, setIsAddressValid] = useState(false);
   const [isAmountValid, setIsAmountValid] = useState(false);
   const [tipAmount, setTipAmount] = useState(0);
@@ -60,7 +60,7 @@ const TransferForm = () => {
     // Check if the source chain matches the wallet's network
     const isMismatch = networkChainId?.toString() !== sourceChain;
     if (account) {
-      setShowNetworkWarning(isMismatch);
+      setIsSourceNetworkAsWallet(isMismatch);
       setIsAddressValid(
         !!destinationAddress &&
           destinationAddress !== "0x0000000000000000000000000000000000000000" &&
@@ -130,7 +130,7 @@ const TransferForm = () => {
         setUserBalance(0);
       }
     };
-    if (!showNetworkWarning) fetchBalance();
+    if (!isSourceNetworkAsWallet) fetchBalance();
   }, [
     account,
     config.contracts,
@@ -138,7 +138,7 @@ const TransferForm = () => {
     provider,
     sourceChain,
     isModalOpen,
-    showNetworkWarning,
+    isSourceNetworkAsWallet,
     networkChainId,
   ]);
 
@@ -337,7 +337,7 @@ const TransferForm = () => {
             <label className="block text-sm font-medium text-gray-700">
               From{" "}
             </label>
-            {showNetworkWarning && (
+            {isSourceNetworkAsWallet && (
               <div className="text-red-500 text-xs mt-2">
                 Warning:
                 <button
@@ -422,7 +422,7 @@ const TransferForm = () => {
             />
             <div className="flex justify-between items-center mt-2">
               <span className="text-gray-500 text-sm">
-                Balance: {showNetworkWarning ? '?' : userBalance} USDC
+                Balance: {isSourceNetworkAsWallet ? '?' : userBalance} USDC
               </span>
               <button
                 type="button"
