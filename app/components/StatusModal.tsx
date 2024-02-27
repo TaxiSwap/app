@@ -38,7 +38,7 @@ export const StatusModal: React.FC<StatusModalProps> = ({
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg shadow-lg">
         <div className="text-lg font-semibold">{title}</div>
-        {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+        {errorMessage && <div className="text-red-500 break-words whitespace-normal">{errorMessage}</div>}
         <ul className="my-4">
           {steps.map((step, index) => (
             <li key={index} className="flex flex-col my-4">
