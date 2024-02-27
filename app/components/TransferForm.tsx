@@ -58,18 +58,35 @@ const TransferForm = () => {
     setSourceChain(
       networkChainId?.toString() || Object.keys(config.networks)[0]
     );
-    const initialDestinationChain =
-      networkChainId?.toString() || Object.keys(config.networks)[0];
-    setDestinationChain(initialDestinationChain);
+    let initialDestinationChain =
+      networkChainId?.toString() || Object.keys(config.networks)[1];
+    if(initialDestinationChain === sourceChain){
+      initialDestinationChain = Object.keys(config.networks).find(key => key !== sourceChain) || ''
+    }
+      setDestinationChain(initialDestinationChain);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, config.networks]);
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setSourceChain(e.target.value);
+    const newSourceChain = e.target.value;
+    setSourceChain(newSourceChain);
+
+    // Automatically update destination chain if it matches the new source chain
+    if (destinationChain === newSourceChain) {
+      const newDestinationChain = Object.keys(config.networks).find(key => key !== newSourceChain);
+      setDestinationChain(newDestinationChain || '');
+    }
   };
 
   const handleDestinationChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    setDestinationChain(e.target.value);
+    const newDestinationChain = e.target.value;
+    setDestinationChain(newDestinationChain);
+
+    // Automatically update source chain if it matches the new destination chain
+    if (sourceChain === newDestinationChain) {
+      const newSourceChain = Object.keys(config.networks).find(key => key !== newDestinationChain);
+      setSourceChain(newSourceChain || '');
+    }
   };
 
   const handleAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
