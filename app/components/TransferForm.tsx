@@ -160,7 +160,7 @@ const TransferForm = () => {
   };
 
   const handleAddMax = () => {
-    // Implement functionality to add max amount
+    setAmount(userBalance)
   };
 
   const handleNetworkSwitch = async () => {
