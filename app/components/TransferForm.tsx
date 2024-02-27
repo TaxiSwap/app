@@ -35,17 +35,20 @@ const TransferForm = () => {
 
    // state to track if all steps are completed or an error occurred
    const [canClose, setCanClose] = useState(false);
+   const [transferCompleted, setTransferCompleted] = useState(false);
 
   useEffect(() => {
     // Reset when modal is closed
     if (!isModalOpen) {
       setCanClose(false);
+      setTransferCompleted(false);
     }
   }, [isModalOpen]);
 
   useEffect(() => {
     // Determine if all steps are completed or if there's an error
     const allStepsCompleted = steps.every(step => step.status === 'completed');
+    setTransferCompleted(allStepsCompleted);
     const hasError = modalError !== undefined;
     setCanClose(allStepsCompleted || hasError);
   }, [steps, modalError]);
@@ -204,6 +207,7 @@ const TransferForm = () => {
         steps={steps}
         errorMessage={modalError}
         canClose={canClose}
+        transferCompleted={transferCompleted}
       />
       <h2 className="text-3xl font-bold mb-4">Transfer USDC across chains</h2>
       <p className="mb-8 text-gray-600">

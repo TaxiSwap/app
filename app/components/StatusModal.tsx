@@ -10,7 +10,8 @@ export interface StatusModalProps {
     requiresWalletInteraction?: boolean;
   }>;
   errorMessage?: string;
-  canClose: boolean
+  canClose: boolean;
+  transferCompleted: boolean;
 }
 
 export const StatusModal: React.FC<StatusModalProps> = ({
@@ -19,14 +20,15 @@ export const StatusModal: React.FC<StatusModalProps> = ({
   title,
   steps,
   errorMessage,
-  canClose
+  canClose,
+  transferCompleted,
 }) => {
   if (!isOpen) return null;
 
   interface SpinnerProps {
     stepNumber: number;
   }
-  
+
   const Spinner: React.FC<SpinnerProps> = ({ stepNumber }) => (
     <div className="relative flex items-center justify-center">
       <div className="absolute">{stepNumber}</div>
@@ -38,7 +40,6 @@ export const StatusModal: React.FC<StatusModalProps> = ({
     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="relative p-8 bg-white w-full max-w-md m-auto flex-col flex rounded-lg shadow-lg">
         <div className="text-lg font-semibold">{title}</div>
-        {errorMessage && <div className="text-red-500 break-words whitespace-normal">{errorMessage}</div>}
         <ul className="my-4">
           {steps.map((step, index) => (
             <li key={index} className="flex flex-col my-4">
@@ -83,7 +84,20 @@ export const StatusModal: React.FC<StatusModalProps> = ({
             </li>
           ))}
         </ul>
-        <div className="flex justify-end">
+        {transferCompleted && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-6 py-4 mb-4 rounded relative break-words whitespace-normal">
+            <strong className="font-bold">Success!</strong>
+            <span className="block sm:inline"> Transfer Completed</span>
+          </div>
+        )}
+        {errorMessage && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded relative break-words whitespace-normal mb-4">
+            <strong className="font-bold">Error!</strong>
+            <span className="block sm:inline"> {errorMessage}</span>
+          </div>
+        )}
+
+        <div className="flex justify-center">
           <button
             onClick={onClose}
             disabled={!canClose}
