@@ -8,6 +8,7 @@ import { Signer, ethers } from "ethers";
 import { useMessage } from "../contexts/MessageContext";
 import { StatusModal } from "./StatusModal";
 import { useTransaction } from "../contexts/TransactionContext";
+import SwapButton from "./SwapButton";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -90,6 +91,13 @@ const TransferForm = () => {
       );
       setSourceChain(newSourceChain || "");
     }
+  };
+
+  const handleSwapChains = () => {
+    const source = sourceChain;
+    const destination = destinationChain;
+    setDestinationChain(source);
+    setSourceChain(destination);
   };
 
   const handleAddressChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -255,7 +263,7 @@ const TransferForm = () => {
               ))}
             </select>
           </div>
-          <SlArrowRight className="mx-4 text-4xl text-gray-600" />
+          <SwapButton onSwap={handleSwapChains} />
           <div className="flex-grow">
             <label className="block text-sm font-medium text-gray-700">
               To
