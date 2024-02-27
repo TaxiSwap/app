@@ -304,18 +304,18 @@ const TransferForm = () => {
 
         <label className="block">
           <span className="text-gray-700">Amount</span>
-          <div className="mt-1 flex space-x-2">
+          <div className="mt-1 relative">
             <input
               type="number"
               value={amount}
               onChange={handleAmountChange}
               placeholder="0.00"
-              className="form-input flex-1 px-4 py-2 bg-gray-200 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+              className="form-input w-full px-4 py-2 bg-gray-200 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 pl-3 pr-10" // Adjust padding to accommodate button
             />
             <button
               type="button"
               onClick={handleAddMax}
-              className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-4 py-2"
+              className="absolute right-2 top-2 text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-3 py-1" // Positioned inside the input field
             >
               ADD MAX
             </button>
