@@ -59,31 +59,52 @@ export function findRejectionReason(errorString: string): string | null {
   return match ? match[1] : null;
 }
 
-export async function getTokenBalance(accountAddress: string, tokenAddress: string, provider: ethers.Provider): Promise<number> {
+export async function getTokenBalance(
+  accountAddress: string,
+  tokenAddress: string,
+  provider: ethers.Provider
+): Promise<number> {
   // ERC-20 Token ABI including balanceOf and decimals functions
   const tokenAbi = [
-      // balanceOf function
-      "function balanceOf(address owner) view returns (uint256)",
-      // decimals function
-      "function decimals() view returns (uint8)"
+    // balanceOf function
+    "function balanceOf(address owner) view returns (uint256)",
+    // decimals function
+    "function decimals() view returns (uint8)",
   ];
 
   // Create an instance of the token contract
   const tokenContract = new ethers.Contract(tokenAddress, tokenAbi, provider);
 
   try {
-      // Fetch the token decimals
-      const decimals = await tokenContract.decimals();
+    // Fetch the token decimals
+    const decimals = await tokenContract.decimals();
 
-      // Fetch the token balance
-      const balance = await tokenContract.balanceOf(accountAddress);
+    // Fetch the token balance
+    const balance = await tokenContract.balanceOf(accountAddress);
 
-      // Format the balance using the token's decimals
-      const formattedBalance = ethers.formatUnits(balance, decimals);
+    // Format the balance using the token's decimals
+    const formattedBalance = ethers.formatUnits(balance, decimals);
 
-      return Number(formattedBalance);
+    return Number(formattedBalance);
   } catch (error) {
-      console.error("Error fetching token balance:", error);
-      throw error;
+    console.error("Error fetching token balance:", error);
+    throw error;
   }
+}
+
+export async function getTipAmount(
+  contractAddress: string,
+  destinationDomain: number,
+  provider: ethers.Provider
+): Promise<number> {
+  const contractAbi = [
+    "function getTipAmount(uint32) view returns (uint256)",
+  ];
+  const contract = new ethers.Contract(
+    contractAddress,
+    contractAbi,
+    provider
+  );
+  const tipAmount = await contract.getTipAmount(destinationDomain);
+  return Number(ethers.formatUnits(tipAmount.toString(), 6));
 }
