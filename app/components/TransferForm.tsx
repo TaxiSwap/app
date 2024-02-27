@@ -2,13 +2,14 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { useWallet } from "../contexts/WalletContext";
 import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
-import { SlArrowRight } from "react-icons/sl";
+import { getTokenBalance } from "../blockchain/utils";
 import { approveTokenTransfer, depositForBurn } from "../blockchain/actions";
 import { Signer, ethers } from "ethers";
 import { useMessage } from "../contexts/MessageContext";
 import { StatusModal } from "./StatusModal";
 import { useTransaction } from "../contexts/TransactionContext";
 import SwapButton from "./SwapButton";
+import { Provider } from "ethers";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -33,6 +34,8 @@ const TransferForm = () => {
   // state to track if all steps are completed or an error occurred
   const [canClose, setCanClose] = useState(false);
   const [transferCompleted, setTransferCompleted] = useState(false);
+
+  const [userBalance, setUserBalance] = useState(0);
 
   useEffect(() => {
     // Reset when modal is closed
@@ -66,6 +69,22 @@ const TransferForm = () => {
     setDestinationChain(initialDestinationChain);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, config.networks]);
+
+  useEffect(() => {
+    console.log("into effect")
+    const fetchBalance = async () => {
+      try {
+        console.log("fetching balance")
+          const balance = await getTokenBalance(account as string, config.contracts[sourceChain]?.USDC_CONTRACT_ADDRESS, provider as Provider);
+          setUserBalance(balance);
+      } catch (error) {
+          console.error('Failed to fetch token balance:', error);
+          setUserBalance(0);
+      }
+  };
+  fetchBalance();
+  }, [account, config.contracts, config.networks, provider, sourceChain, isModalOpen]);
+  
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const newSourceChain = e.target.value;
@@ -303,23 +322,27 @@ const TransferForm = () => {
         </label>
 
         <label className="block">
-          <span className="text-gray-700">Amount</span>
-          <div className="mt-1 relative">
-            <input
-              type="number"
-              value={amount}
-              onChange={handleAmountChange}
-              placeholder="0.00"
-              className="form-input w-full px-4 py-2 bg-gray-200 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 pl-3 pr-10" // Adjust padding to accommodate button
-            />
-            <button
-              type="button"
-              onClick={handleAddMax}
-              className="absolute right-2 top-2 text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-3 py-1" // Positioned inside the input field
-            >
-              ADD MAX
-            </button>
-          </div>
+            <span className="text-gray-700">Amount</span>
+            <div className="mt-1 relative">
+                <input
+                    type="number"
+                    value={amount}
+                    onChange={handleAmountChange}
+                    placeholder="0.00"
+                    className="form-input w-full py-2 bg-gray-200 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                />
+                <div className="flex justify-between items-center mt-2">
+                    {/* Balance information and ADD MAX button are now in a flex container */}
+                    <span className="text-gray-500 text-sm">Balance: ${userBalance}</span>
+                    <button
+                        type="button"
+                        onClick={handleAddMax}
+                        className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-3 py-1"
+                    >
+                        ADD MAX
+                    </button>
+                </div>
+            </div>
         </label>
 
         <button className="w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none shadow transition duration-300">
