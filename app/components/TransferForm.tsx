@@ -50,7 +50,7 @@ const TransferForm = () => {
         provider as Provider
       );
       console.log("tipAmount: ", tipAmount)
-      setTipAmount(tipAmount);
+      setTipAmount(tipAmount || 0);
     };
     fetchTipAmount();
   }, [config.contracts, destinationChain, provider, sourceChain]);
@@ -422,7 +422,7 @@ const TransferForm = () => {
             />
             <div className="flex justify-between items-center mt-2">
               <span className="text-gray-500 text-sm">
-                Balance: ${userBalance}
+                Balance: {showNetworkWarning ? '?' : userBalance} USDC
               </span>
               <button
                 type="button"
