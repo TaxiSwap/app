@@ -2,7 +2,7 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { useWallet } from "../contexts/WalletContext";
 import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
-import { getTokenBalance } from "../blockchain/utils";
+import { getTokenBalance, getTipAmount } from "../blockchain/utils";
 import { approveTokenTransfer, depositForBurn } from "../blockchain/actions";
 import { Signer, ethers } from "ethers";
 import { useMessage } from "../contexts/MessageContext";
@@ -38,21 +38,49 @@ const TransferForm = () => {
   const [userBalance, setUserBalance] = useState(0);
 
   const [showNetworkWarning, setShowNetworkWarning] = useState(false);
-  const [isAddressValid, setIsAddressValid] = useState(true);
+  const [isAddressValid, setIsAddressValid] = useState(false);
+  const [isAmountValid, setIsAmountValid] = useState(false);
+  const [tipAmount, setTipAmount] = useState(0);
 
+  useEffect(() => {
+    const fetchTipAmount = async () => {
+      const tipAmount = await getTipAmount(
+        config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
+        config.contracts[destinationChain]?.DOMAIN,
+        provider as Provider
+      );
+      console.log("tipAmount: ", tipAmount)
+      setTipAmount(tipAmount);
+    };
+    fetchTipAmount();
+  }, [config.contracts, destinationChain, provider, sourceChain]);
+
+  // Validations
   useEffect(() => {
     // Check if the source chain matches the wallet's network
     const isMismatch = networkChainId?.toString() !== sourceChain;
     if (account) {
       setShowNetworkWarning(isMismatch);
-      console.log("destinationAddress:" , destinationAddress, typeof(destinationAddress), !!destinationAddress )
       setIsAddressValid(
-        !!destinationAddress  &&
+        !!destinationAddress &&
           destinationAddress !== "0x0000000000000000000000000000000000000000" &&
           ethers.isAddress(destinationAddress)
       );
+
+      setIsAmountValid(amount <= userBalance && amount > tipAmount);
     }
-  }, [sourceChain, networkChainId, account, destinationAddress]);
+  }, [
+    sourceChain,
+    networkChainId,
+    account,
+    destinationAddress,
+    config.contracts,
+    destinationChain,
+    provider,
+    amount,
+    userBalance,
+    tipAmount,
+  ]);
 
   useEffect(() => {
     // Reset when modal is closed
@@ -160,7 +188,7 @@ const TransferForm = () => {
   };
 
   const handleAddMax = () => {
-    setAmount(userBalance)
+    setAmount(userBalance);
   };
 
   const handleNetworkSwitch = async () => {
@@ -307,7 +335,7 @@ const TransferForm = () => {
         <div className="flex items-end mb-4">
           <div className="flex-grow">
             <label className="block text-sm font-medium text-gray-700">
-              From
+              From{" "}
             </label>
             {showNetworkWarning && (
               <div className="text-red-500 text-xs mt-2">
@@ -355,7 +383,7 @@ const TransferForm = () => {
         </div>
 
         <label className="block">
-          <span className="text-gray-700">Destination Address</span>
+          <span className="text-gray-700">Destination Address </span>
           {!isAddressValid && (
             <span className="text-red-500 text-xs">
               Please enter a valid address.
@@ -380,7 +408,10 @@ const TransferForm = () => {
         </label>
 
         <label className="block">
-          <span className="text-gray-700">Amount</span>
+          <span className="text-gray-700">Amount </span>
+          {!isAmountValid && (
+            <span className="text-red-500 text-xs">Wrong amount</span>
+          )}
           <div className="mt-1 relative">
             <input
               type="number"
