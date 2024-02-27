@@ -41,6 +41,7 @@ const TransferForm = () => {
   const [isAddressValid, setIsAddressValid] = useState(false);
   const [isAmountValid, setIsAmountValid] = useState(false);
   const [tipAmount, setTipAmount] = useState(0);
+  const [enableTransfer, setEnableTransfer] = useState(false);
 
   useEffect(() => {
     const fetchTipAmount = async () => {
@@ -49,7 +50,7 @@ const TransferForm = () => {
         config.contracts[destinationChain]?.DOMAIN,
         provider as Provider
       );
-      console.log("tipAmount: ", tipAmount)
+      console.log("tipAmount: ", tipAmount);
       setTipAmount(tipAmount || 0);
     };
     fetchTipAmount();
@@ -60,7 +61,7 @@ const TransferForm = () => {
     // Check if the source chain matches the wallet's network
     const isMismatch = networkChainId?.toString() !== sourceChain;
     if (account) {
-      setIsSourceNetworkAsWallet(isMismatch);
+      setIsSourceNetworkAsWallet(!isMismatch);
       setIsAddressValid(
         !!destinationAddress &&
           destinationAddress !== "0x0000000000000000000000000000000000000000" &&
@@ -68,6 +69,9 @@ const TransferForm = () => {
       );
 
       setIsAmountValid(amount <= userBalance && amount > tipAmount);
+      setEnableTransfer(
+        isSourceNetworkAsWallet && isAddressValid && isAmountValid
+      );
     }
   }, [
     sourceChain,
@@ -80,6 +84,9 @@ const TransferForm = () => {
     amount,
     userBalance,
     tipAmount,
+    isSourceNetworkAsWallet,
+    isAddressValid,
+    isAmountValid,
   ]);
 
   useEffect(() => {
@@ -337,7 +344,7 @@ const TransferForm = () => {
             <label className="block text-sm font-medium text-gray-700">
               From{" "}
             </label>
-            {isSourceNetworkAsWallet && (
+            {!isSourceNetworkAsWallet && (
               <div className="text-red-500 text-xs mt-2">
                 Warning:
                 <button
@@ -422,7 +429,7 @@ const TransferForm = () => {
             />
             <div className="flex justify-between items-center mt-2">
               <span className="text-gray-500 text-sm">
-                Balance: {isSourceNetworkAsWallet ? '?' : userBalance} USDC
+                Balance: {!isSourceNetworkAsWallet ? "?" : userBalance} USDC
               </span>
               <button
                 type="button"
@@ -435,7 +442,15 @@ const TransferForm = () => {
           </div>
         </label>
 
-        <button className="w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none shadow transition duration-300">
+        <button
+          className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none shadow transition duration-300
+              ${
+                !enableTransfer
+                  ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+          disabled={!enableTransfer}
+        >
           NEXT
         </button>
       </form>
