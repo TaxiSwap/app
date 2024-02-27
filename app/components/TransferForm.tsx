@@ -3,10 +3,7 @@ import React, { useState, ChangeEvent, useEffect } from "react";
 import { useWallet } from "../contexts/WalletContext";
 import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
 import { SlArrowRight } from "react-icons/sl";
-import {
-  approveTokenTransfer,
-  depositForBurn,
-} from "../blockchain/actions";
+import { approveTokenTransfer, depositForBurn } from "../blockchain/actions";
 import { Signer, ethers } from "ethers";
 import { useMessage } from "../contexts/MessageContext";
 import { StatusModal } from "./StatusModal";
@@ -17,7 +14,6 @@ const TransferForm = () => {
     useWallet();
   const { config } = useNetworkConfigContext();
   const { showMessage } = useMessage();
-
 
   const [sourceChain, setSourceChain] = useState<string>(
     Object.keys(config.networks)[0]
@@ -33,9 +29,9 @@ const TransferForm = () => {
 
   const [modalError, setModalError] = useState<string | undefined>();
 
-   // state to track if all steps are completed or an error occurred
-   const [canClose, setCanClose] = useState(false);
-   const [transferCompleted, setTransferCompleted] = useState(false);
+  // state to track if all steps are completed or an error occurred
+  const [canClose, setCanClose] = useState(false);
+  const [transferCompleted, setTransferCompleted] = useState(false);
 
   useEffect(() => {
     // Reset when modal is closed
@@ -47,7 +43,9 @@ const TransferForm = () => {
 
   useEffect(() => {
     // Determine if all steps are completed or if there's an error
-    const allStepsCompleted = steps.every(step => step.status === 'completed');
+    const allStepsCompleted = steps.every(
+      (step) => step.status === "completed"
+    );
     setTransferCompleted(allStepsCompleted);
     const hasError = modalError !== undefined;
     setCanClose(allStepsCompleted || hasError);
@@ -60,10 +58,11 @@ const TransferForm = () => {
     );
     let initialDestinationChain =
       networkChainId?.toString() || Object.keys(config.networks)[1];
-    if(initialDestinationChain === sourceChain){
-      initialDestinationChain = Object.keys(config.networks).find(key => key !== sourceChain) || ''
+    if (initialDestinationChain === sourceChain) {
+      initialDestinationChain =
+        Object.keys(config.networks).find((key) => key !== sourceChain) || "";
     }
-      setDestinationChain(initialDestinationChain);
+    setDestinationChain(initialDestinationChain);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, config.networks]);
 
@@ -73,8 +72,10 @@ const TransferForm = () => {
 
     // Automatically update destination chain if it matches the new source chain
     if (destinationChain === newSourceChain) {
-      const newDestinationChain = Object.keys(config.networks).find(key => key !== newSourceChain);
-      setDestinationChain(newDestinationChain || '');
+      const newDestinationChain = Object.keys(config.networks).find(
+        (key) => key !== newSourceChain
+      );
+      setDestinationChain(newDestinationChain || "");
     }
   };
 
@@ -84,8 +85,10 @@ const TransferForm = () => {
 
     // Automatically update source chain if it matches the new destination chain
     if (sourceChain === newDestinationChain) {
-      const newSourceChain = Object.keys(config.networks).find(key => key !== newDestinationChain);
-      setSourceChain(newSourceChain || '');
+      const newSourceChain = Object.keys(config.networks).find(
+        (key) => key !== newDestinationChain
+      );
+      setSourceChain(newSourceChain || "");
     }
   };
 
@@ -185,7 +188,7 @@ const TransferForm = () => {
             destinationChain,
           }),
         });
-        const data = await response.json(); 
+        const data = await response.json();
 
         if (response.ok) {
           showMessage("Message receive succeeded: " + data.hash, "success");
@@ -206,7 +209,7 @@ const TransferForm = () => {
       showMessage(message, "error");
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
-      setModalError(errorMessage); 
+      setModalError(errorMessage);
       dispatch({
         type: "UPDATE_STEP_STATUS",
         stepIndex: currentStep,
