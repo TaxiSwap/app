@@ -37,6 +37,9 @@ const TransferForm = () => {
 
   const [modalError, setModalError] = useState<string | undefined>();
 
+  const [canClose, setCanClose] = useState(false);
+  const [transferCompleted, setTransferCompleted] = useState(false);
+
   useEffect(() => {
     setDestinationAddress("");
     setSourceChain(
@@ -47,6 +50,24 @@ const TransferForm = () => {
     setDestinationChain(initialDestinationChain);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, config.networks]);
+
+  useEffect(() => {
+    // Reset when modal is closed
+    if (!isModalOpen) {
+      setCanClose(false);
+      setTransferCompleted(false);
+    }
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    // Determine if all steps are completed or if there's an error
+    const allStepsCompleted = steps.every(
+      (step) => step.status === "completed"
+    );
+    setTransferCompleted(allStepsCompleted);
+    const hasError = modalError !== undefined;
+    setCanClose(allStepsCompleted || hasError);
+  }, [steps, modalError]);
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setSourceChain(e.target.value);
@@ -207,6 +228,8 @@ const TransferForm = () => {
         title="Transfer Progress"
         steps={steps}
         errorMessage={modalError}
+        canClose={canClose}
+        transferCompleted={transferCompleted}
       />
       <h2 className="text-3xl font-bold mb-4">Transfer USDC across chains</h2>
       <p className="mb-8 text-gray-600">
