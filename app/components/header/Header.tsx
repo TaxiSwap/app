@@ -1,18 +1,17 @@
-'use client';
-import React, { useState } from 'react';
-import WalletButton from '../WalletButton';
-import NetworkButton from './NetworkButton';
-import NetworkToggle from './NetworkToggle';
+"use client";
+import React, { useState } from "react";
+import Brand from "./Brand";
+import WalletButton from "../WalletButton";
+import NetworkButton from "./NetworkButton";
+import NetworkToggle from "./NetworkToggle";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="bg-white p-5 shadow">
-      <div className="container mx-auto flex items-center justify-between relative"> {/* Ensure positioning context is set */}
-        <div className="text-gray-800 text-2xl font-bold">
-          WhiteBridge
-        </div>
+      <div className="container mx-auto flex items-center justify-between relative">
+        <Brand />
         <div className="md:hidden">
           {/* Hamburger Icon */}
           <button
@@ -47,7 +46,11 @@ const Header = () => {
       </div>
 
       {/* Dropdown Menu, visible on small screens when isMenuOpen is true */}
-      <div className={`absolute bg-white p-4 right-0 mt-2 w-auto md:hidden ${isMenuOpen ? 'flex' : 'hidden'} flex-col items-end space-y-3`}>
+      <div
+        className={`absolute bg-white p-4 right-0 mt-2 w-auto md:hidden ${
+          isMenuOpen ? "flex" : "hidden"
+        } flex-col items-end space-y-3`}
+      >
         <NetworkToggle />
         <NetworkButton />
         <WalletButton />
