@@ -1,9 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Brand from "./Brand";
-import WalletButton from "../WalletButton";
-import NetworkButton from "./NetworkButton";
-import NetworkToggle from "./NetworkToggle";
+import MenuItems from "./MenuItems";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,23 +36,10 @@ const Header = () => {
           </button>
         </div>
         {/* Items for larger screens */}
-        <div className="hidden md:flex items-center space-x-3">
-          <NetworkToggle />
-          <NetworkButton />
-          <WalletButton />
-        </div>
+        <MenuItems isMenuOpen={isMenuOpen} displayMode="desktop" />
       </div>
-
       {/* Dropdown Menu, visible on small screens when isMenuOpen is true */}
-      <div
-        className={`absolute bg-white p-4 right-0 mt-2 w-auto md:hidden ${
-          isMenuOpen ? "flex" : "hidden"
-        } flex-col items-end space-y-3`}
-      >
-        <NetworkToggle />
-        <NetworkButton />
-        <WalletButton />
-      </div>
+      <MenuItems isMenuOpen={isMenuOpen} displayMode="mobile" />
     </header>
   );
 };
