@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNetworkConfigContext } from '../contexts/NetworkConfigContext'; // Adjust the import path as needed
+import { useNetworkConfigContext } from '../../contexts/NetworkConfigContext'; // Adjust the import path as needed
 
 const NetworkToggle = () => {
   const { networkType, toggleNetworkType } = useNetworkConfigContext();

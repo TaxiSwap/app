@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Header from "./components/Header";
+import Header from "./components/header/Header";
 import TransferForm from "./components/TransferForm";
 import { NetworkConfigProvider } from "./contexts/NetworkConfigContext";
 import { WalletProvider } from "./contexts/WalletContext";

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import WalletButton from './WalletButton';
+import WalletButton from '../WalletButton';
 import NetworkButton from './NetworkButton';
 import NetworkToggle from './NetworkToggle';
 

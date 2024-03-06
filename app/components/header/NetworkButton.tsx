@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { useWallet } from '../contexts/WalletContext';
-import { useNetworkConfigContext } from '../contexts/NetworkConfigContext'; 
+import { useWallet } from '../../contexts/WalletContext';
+import { useNetworkConfigContext } from '../../contexts/NetworkConfigContext'; 
 
 const NetworkButton = () => {
   const { networkName, switchNetwork, account, networkChainId } = useWallet();
