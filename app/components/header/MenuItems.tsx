@@ -1,7 +1,7 @@
 import React from 'react';
 import NetworkToggle from './NetworkToggle';
 import NetworkButton from './NetworkButton';
-import WalletButton from '../WalletButton';
+import WalletButton from './WalletButton';
 
 // Define an interface for the component's props
 interface MenuItemsProps {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {useWallet} from '../contexts/WalletContext';
+import {useWallet} from '../../contexts/WalletContext';
 
 const WalletButton = () => {
     const { connectWallet, disconnectWallet, account } = useWallet();
