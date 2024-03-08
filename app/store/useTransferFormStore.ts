@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware';
-import { useNetworkStore } from './useNetworkConfig';
 
 // Define a type for the store's state
 interface TransferFormState {

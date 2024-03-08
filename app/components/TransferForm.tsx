@@ -10,21 +10,35 @@ import { StatusModal } from "./StatusModal";
 import { useTransaction } from "../contexts/TransactionContext";
 import SwapButton from "./SwapButton";
 import { Provider } from "ethers";
+import { useTransferFormStore } from "@/app/store/useTransferFormStore";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
     useWallet();
   const { config } = useNetworkStore();
+  const {
+    sourceChain,
+    destinationChain,
+    destinationAddress,
+    amount,
+    userBalance,
+    isAddressValid,
+    isAmountValid,
+    setSourceChain,
+    setDestinationChain,
+    setDestinationAddress,
+    setAmount,
+    setUserBalance,
+    setIsAddressValid,
+    setIsAmountValid,
+  } = useTransferFormStore();
   const { showMessage } = useMessage();
 
-  const [sourceChain, setSourceChain] = useState<string>(
-    Object.keys(config.networks)[0]
-  );
-  const [destinationChain, setDestinationChain] = useState<string>(
-    Object.keys(config.networks)[0]
-  );
-  const [destinationAddress, setDestinationAddress] = useState<string>("");
-  const [amount, setAmount] = useState<number>(0);
+  useEffect(() => {
+    setSourceChain(config.networks[0]);
+    setDestinationChain(config.networks[1]);
+    // This will update the sourceChain and destinationChain whenever the networkType changes
+  }, [setSourceChain, setDestinationChain, config.networks]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { steps, dispatch } = useTransaction();
@@ -35,11 +49,7 @@ const TransferForm = () => {
   const [canClose, setCanClose] = useState(false);
   const [transferCompleted, setTransferCompleted] = useState(false);
 
-  const [userBalance, setUserBalance] = useState(0);
-
   const [isSourceNetworkAsWallet, setIsSourceNetworkAsWallet] = useState(false);
-  const [isAddressValid, setIsAddressValid] = useState(false);
-  const [isAmountValid, setIsAmountValid] = useState(false);
   const [tipAmount, setTipAmount] = useState(0);
   const [enableTransfer, setEnableTransfer] = useState(false);
 
@@ -87,6 +97,8 @@ const TransferForm = () => {
     isSourceNetworkAsWallet,
     isAddressValid,
     isAmountValid,
+    setIsAddressValid,
+    setIsAmountValid,
   ]);
 
   useEffect(() => {
@@ -147,6 +159,7 @@ const TransferForm = () => {
     isModalOpen,
     isSourceNetworkAsWallet,
     networkChainId,
+    setUserBalance,
   ]);
 
   const handleSourceChange = (e: ChangeEvent<HTMLSelectElement>) => {
