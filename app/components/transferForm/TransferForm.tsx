@@ -11,6 +11,7 @@ import { useTransaction } from "../../contexts/TransactionContext";
 import SwapButton from "../SwapButton";
 import { Provider } from "ethers";
 import { useTransferFormStore } from "@/app/store/useTransferFormStore";
+import SelectChain from "./SelectChain";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -49,7 +50,7 @@ const TransferForm = () => {
   const [canClose, setCanClose] = useState(false);
   const [transferCompleted, setTransferCompleted] = useState(false);
 
-  const [isSourceNetworkAsWallet, setIsSourceNetworkAsWallet] = useState(false);
+  const [isSourceNetworkAsWallet, setIsSourceNetworkAsWallet] = useState(true);
   const [tipAmount, setTipAmount] = useState(0);
   const [enableTransfer, setEnableTransfer] = useState(false);
 
@@ -353,53 +354,25 @@ const TransferForm = () => {
       </p>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-end mb-4">
-          <div className="flex-grow">
-            <label className="block text-sm font-medium text-gray-700">
-              From{" "}
-            </label>
-            {!isSourceNetworkAsWallet && (
-              <div className="text-red-500 text-xs mt-2">
-                Warning:
-                <button
-                  className="ml-2 text-blue-500 text-xs"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    handleNetworkSwitch();
-                  }}
-                >
-                  Switch Wallet Network
-                </button>
-              </div>
-            )}
-            <select
-              value={sourceChain}
-              onChange={handleSourceChange}
-              className="mt-1 block w-full px-4 py-2 text-base font-normal bg-gray-200 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-            >
-              {Object.entries(config.networks).map(([chainId, networkName]) => (
-                <option key={chainId} value={chainId}>
-                  {networkName}
-                </option>
-              ))}
-            </select>
-          </div>
+          <SelectChain
+            key={"source"}
+            label="From:"
+            value={sourceChain}
+            onChange={(e) => handleSourceChange(e)}
+            networks={config.networks}
+            errorMessage={
+              !isSourceNetworkAsWallet ? "Switch Wallet Network" : undefined
+            }
+            onErrorClick={handleNetworkSwitch}
+          />
           <SwapButton onSwap={handleSwapChains} />
-          <div className="flex-grow">
-            <label className="block text-sm font-medium text-gray-700">
-              To
-            </label>
-            <select
-              value={destinationChain}
-              onChange={handleDestinationChange}
-              className="mt-1 block w-full px-4 py-2 text-base font-normal bg-gray-200 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-            >
-              {Object.entries(config.networks).map(([chainId, networkName]) => (
-                <option key={chainId} value={chainId}>
-                  {networkName}
-                </option>
-              ))}
-            </select>
-          </div>
+          <SelectChain
+            key={"destination"}
+            label="To:"
+            value={destinationChain}
+            onChange={(e) => handleDestinationChange(e)}
+            networks={config.networks}
+          />
         </div>
 
         <label className="block">
