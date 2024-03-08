@@ -1,5 +1,5 @@
 import Header from "./components/header/Header";
-import TransferForm from "./components/TransferForm";
+import TransferForm from "./components/transferForm/TransferForm";
 import { WalletProvider } from "./contexts/WalletContext";
 import { MessageProvider } from "./contexts/MessageContext";
 import { TransactionProvider } from "./contexts/TransactionContext";

@@ -1,14 +1,14 @@
 "use client";
 import React, { useState, ChangeEvent, useEffect } from "react";
-import { useWallet } from "../contexts/WalletContext";
+import { useWallet } from "../../contexts/WalletContext";
 import { useNetworkStore } from "@/app/store/useNetworkConfig";
-import { getTokenBalance, getTipAmount } from "../blockchain/utils";
-import { approveTokenTransfer, depositForBurn } from "../blockchain/actions";
+import { getTokenBalance, getTipAmount } from "../../blockchain/utils";
+import { approveTokenTransfer, depositForBurn } from "../../blockchain/actions";
 import { Signer, ethers } from "ethers";
-import { useMessage } from "../contexts/MessageContext";
-import { StatusModal } from "./StatusModal";
-import { useTransaction } from "../contexts/TransactionContext";
-import SwapButton from "./SwapButton";
+import { useMessage } from "../../contexts/MessageContext";
+import { StatusModal } from "../StatusModal";
+import { useTransaction } from "../../contexts/TransactionContext";
+import SwapButton from "../SwapButton";
 import { Provider } from "ethers";
 import { useTransferFormStore } from "@/app/store/useTransferFormStore";
 
