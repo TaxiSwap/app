@@ -1,11 +1,11 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import { useWallet } from '../../contexts/WalletContext';
-import { useNetworkConfigContext } from '../../contexts/NetworkConfigContext'; 
+import { useNetworkStore } from "@/app/store/useNetworkConfig";
 
 const NetworkButton = () => {
   const { networkName, switchNetwork, account, networkChainId } = useWallet();
-  const { config } = useNetworkConfigContext();
+  const { config } = useNetworkStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleSwitch = (chainId: string) => {

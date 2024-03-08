@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { useWallet } from "../contexts/WalletContext";
-import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
+import { useNetworkStore } from "@/app/store/useNetworkConfig";
 import { getTokenBalance, getTipAmount } from "../blockchain/utils";
 import { approveTokenTransfer, depositForBurn } from "../blockchain/actions";
 import { Signer, ethers } from "ethers";
@@ -14,7 +14,7 @@ import { Provider } from "ethers";
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
     useWallet();
-  const { config } = useNetworkConfigContext();
+  const { config } = useNetworkStore();
   const { showMessage } = useMessage();
 
   const [sourceChain, setSourceChain] = useState<string>(

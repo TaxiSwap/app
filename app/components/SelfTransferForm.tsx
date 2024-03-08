@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, ChangeEvent, useEffect } from "react";
 import { useWallet } from "../contexts/WalletContext";
-import { useNetworkConfigContext } from "../contexts/NetworkConfigContext";
+import { useNetworkStore } from "@/app/store/useNetworkConfig";
 import { SlArrowRight } from "react-icons/sl";
 import {
   approveTokenTransfer,
@@ -20,7 +20,7 @@ import { useTransaction } from "../contexts/TransactionContext";
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
     useWallet();
-  const { config } = useNetworkConfigContext();
+  const { config } = useNetworkStore();
   const { showMessage } = useMessage();
 
   const [sourceChain, setSourceChain] = useState<string>(
