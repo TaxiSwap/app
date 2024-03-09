@@ -12,6 +12,7 @@ import SwapButton from "../SwapButton";
 import { Provider } from "ethers";
 import { useTransferFormStore } from "@/app/store/useTransferFormStore";
 import SelectChain from "./SelectChain";
+import AddressInput from "./AddressInput";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -374,32 +375,13 @@ const TransferForm = () => {
             networks={config.networks}
           />
         </div>
-
-        <label className="block">
-          <span className="text-gray-700">Destination Address </span>
-          {!isAddressValid && (
-            <span className="text-red-500 text-xs">
-              Please enter a valid address.
-            </span>
-          )}
-          <div className="mt-1 relative">
-            <input
-              type="text"
-              value={destinationAddress}
-              onChange={handleAddressChange}
-              placeholder="0x..."
-              className="form-input w-full px-4 py-2 bg-gray-200 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-            />
-            <button
-              type="button"
-              onClick={handleCopyAddress}
-              className="absolute right-2 top-2 text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-3 py-1"
-            >
-              COPY FROM WALLET
-            </button>
-          </div>
-        </label>
-
+        <AddressInput
+          value={destinationAddress}
+          onChange={handleAddressChange}
+          isValid={isAddressValid}
+          errorMessage="Please enter a valid address."
+          handleCopyAddress={handleCopyAddress}
+        />
         <label className="block">
           <span className="text-gray-700">Amount </span>
           {!isAmountValid && (
