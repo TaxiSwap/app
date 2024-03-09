@@ -14,6 +14,7 @@ import { useTransferFormStore } from "@/app/store/useTransferFormStore";
 import SelectChain from "./SelectChain";
 import AddressInput from "./AddressInput";
 import AmountInput from "./AmountInput";
+import TransferHeader from "./TransferHeader";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -346,14 +347,7 @@ const TransferForm = () => {
         canClose={canClose}
         transferCompleted={transferCompleted}
       />
-      <h2 className="text-3xl font-bold mb-4">Transfer USDC across chains</h2>
-      <p className="mb-8 text-gray-600">
-        Our USDC bridge simplifies cross-network transactions, offering a
-        cost-effective and straightforward solution for transferring your
-        digital currency. Designed for ease and efficiency, it ensures seamless
-        and affordable transfers across chains, making it the go-to choice for
-        managing your USDC assets.
-      </p>
+    <TransferHeader />
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-end mb-4">
           <SelectChain
