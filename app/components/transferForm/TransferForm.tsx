@@ -7,7 +7,7 @@ import { approveTokenTransfer, depositForBurn } from "../../blockchain/actions";
 import { Signer, ethers } from "ethers";
 import { useMessage } from "../../contexts/MessageContext";
 import { StatusModal } from "../StatusModal";
-import { useTransaction } from "../../contexts/TransactionContext";
+import { useTransferStateStore } from "@/app/store/useTransferStateStore";
 import SwapButton from "../SwapButton";
 import { Provider } from "ethers";
 import { useTransferFormStore } from "@/app/store/useTransferFormStore";
@@ -37,6 +37,7 @@ const TransferForm = () => {
     setIsAmountValid,
   } = useTransferFormStore();
   const { showMessage } = useMessage();
+  const { steps, updateStepStatus, resetSteps } = useTransferStateStore();
 
   useEffect(() => {
     setSourceChain(config.networks[0]);
@@ -45,7 +46,6 @@ const TransferForm = () => {
   }, [setSourceChain, setDestinationChain, config.networks]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { steps, dispatch } = useTransaction();
 
   const [modalError, setModalError] = useState<string | undefined>();
 
@@ -228,7 +228,7 @@ const TransferForm = () => {
 
   const openModalWithResetState = () => {
     // Reset step statuses
-    dispatch({ type: "RESET_STEPS" });
+    resetSteps();
     setModalError(undefined); // Clear any previous error messages
     setIsModalOpen(true);
   };
@@ -249,11 +249,7 @@ const TransferForm = () => {
         );
 
       // Step 1: Approve token transfer (Sign with wallet)
-      dispatch({
-        type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep,
-        status: "working",
-      });
+      updateStepStatus(currentStep, "working");
       const approvalTx = await approveTokenTransfer(
         usdcAddress,
         config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
@@ -261,18 +257,10 @@ const TransferForm = () => {
         signer as Signer
       );
       showMessage("Approval Succeeded: " + approvalTx, "success");
-      dispatch({
-        type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep++,
-        status: "completed",
-      });
+      updateStepStatus(currentStep++, "completed");
 
       // Step 2: Deposit token to contract (Sign with wallet)
-      dispatch({
-        type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep,
-        status: "working",
-      });
+      updateStepStatus(currentStep, "working");
       const depositTx = await depositForBurn(
         config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
         ethers.parseUnits(amount.toString(), 6),
@@ -282,17 +270,9 @@ const TransferForm = () => {
         signer as Signer
       );
       showMessage("Deposit succeeded: " + depositTx, "success");
-      dispatch({
-        type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep++,
-        status: "completed",
-      });
+      updateStepStatus(currentStep++, "completed");
 
-      dispatch({
-        type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep,
-        status: "working",
-      });
+      updateStepStatus(currentStep, "working");
 
       try {
         const response = await fetch("/api/blockchain/receiveMessage", {
@@ -313,11 +293,7 @@ const TransferForm = () => {
         } else {
           throw new Error(data.error || "Unknown Error");
         }
-        dispatch({
-          type: "UPDATE_STEP_STATUS",
-          stepIndex: currentStep++,
-          status: "completed",
-        });
+        updateStepStatus(currentStep, "completed");
       } catch (error: unknown) {
         if (error instanceof Error) throw new Error(error.message);
         throw Error("Unexpected Error on receive!");
@@ -328,11 +304,7 @@ const TransferForm = () => {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
       setModalError(errorMessage);
-      dispatch({
-        type: "UPDATE_STEP_STATUS",
-        stepIndex: currentStep,
-        status: "error",
-      });
+      updateStepStatus(currentStep, "error");
     }
   };
 
@@ -347,7 +319,7 @@ const TransferForm = () => {
         canClose={canClose}
         transferCompleted={transferCompleted}
       />
-    <TransferHeader />
+      <TransferHeader />
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex items-end mb-4">
           <SelectChain
@@ -382,8 +354,8 @@ const TransferForm = () => {
           balance={userBalance}
           onChange={handleAmountChange}
           isValid={isAmountValid}
-          onMaxClick={handleAddMax} 
-          errorMessage="Invalid amount." 
+          onMaxClick={handleAddMax}
+          errorMessage="Invalid amount."
         />
         <button
           className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none shadow transition duration-300
