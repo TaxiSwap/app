@@ -13,6 +13,7 @@ import { Provider } from "ethers";
 import { useTransferFormStore } from "@/app/store/useTransferFormStore";
 import SelectChain from "./SelectChain";
 import AddressInput from "./AddressInput";
+import AmountInput from "./AmountInput";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -382,34 +383,14 @@ const TransferForm = () => {
           errorMessage="Please enter a valid address."
           handleCopyAddress={handleCopyAddress}
         />
-        <label className="block">
-          <span className="text-gray-700">Amount </span>
-          {!isAmountValid && (
-            <span className="text-red-500 text-xs">Wrong amount</span>
-          )}
-          <div className="mt-1 relative">
-            <input
-              type="number"
-              value={amount}
-              onChange={handleAmountChange}
-              placeholder="0.00"
-              className="form-input w-full py-2 bg-gray-200 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-            />
-            <div className="flex justify-between items-center mt-2">
-              <span className="text-gray-500 text-sm">
-                Balance: {!isSourceNetworkAsWallet ? "?" : userBalance} USDC
-              </span>
-              <button
-                type="button"
-                onClick={handleAddMax}
-                className="text-white bg-blue-500 hover:bg-blue-600 font-medium rounded-lg text-sm px-3 py-1"
-              >
-                ADD MAX
-              </button>
-            </div>
-          </div>
-        </label>
-
+        <AmountInput
+          value={amount}
+          balance={userBalance}
+          onChange={handleAmountChange}
+          isValid={isAmountValid}
+          onMaxClick={handleAddMax} 
+          errorMessage="Invalid amount." 
+        />
         <button
           className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none shadow transition duration-300
               ${
