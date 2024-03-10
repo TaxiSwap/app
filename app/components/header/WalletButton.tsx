@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import {useWallet} from '../../contexts/WalletContext';
+import { useWalletStore } from '@/app/store/useWalletStore';
 
 const WalletButton = () => {
-    const { connectWallet, disconnectWallet, account } = useWallet();
+    const { connectWallet, disconnectWallet, account } = useWalletStore();
     const [showDropdown, setShowDropdown] = useState(false);
   
     const toggleDropdown = () => setShowDropdown(!showDropdown);

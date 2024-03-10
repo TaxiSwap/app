@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, ChangeEvent, useEffect } from "react";
-import { useWallet } from "../../contexts/WalletContext";
+import { useWalletStore } from "@/app/store/useWalletStore";
 import { useNetworkStore } from "@/app/store/useNetworkConfig";
 import { getTokenBalance, getTipAmount } from "../../blockchain/utils";
 import { approveTokenTransfer, depositForBurn } from "../../blockchain/actions";
@@ -18,7 +18,7 @@ import TransferHeader from "./TransferHeader";
 
 const TransferForm = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
-    useWallet();
+    useWalletStore();
   const { config } = useNetworkStore();
   const {
     sourceChain,
