@@ -10,6 +10,7 @@ import AddressInput from "./AddressInput";
 import AmountInput from "./AmountInput";
 import TransferHeader from "./TransferHeader";
 import { useTransferFormLogic } from "@/app/hooks/useTransferFormLogic";
+import TransactionSummary from "./TransactionSummary";
 
 const TransferForm = () => {
   const { config } = useNetworkStore();
@@ -24,8 +25,14 @@ const TransferForm = () => {
     setSourceChain,
   } = useTransferFormStore();
 
-  const { steps, isModalOpen, modalError, modalCanClose, setIsModalOpen, isTransferCompleted } =
-    useTransferModalStore();
+  const {
+    steps,
+    isModalOpen,
+    modalError,
+    modalCanClose,
+    setIsModalOpen,
+    isTransferCompleted,
+  } = useTransferModalStore();
 
   const {
     userBalance,
@@ -101,6 +108,7 @@ const TransferForm = () => {
           onMaxClick={handleAddMax}
           errorMessage="Invalid amount."
         />
+
         <button
           className={`w-full text-white font-medium rounded-lg text-sm px-5 py-2.5 focus:outline-none shadow transition duration-300
               ${
@@ -112,6 +120,14 @@ const TransferForm = () => {
         >
           NEXT
         </button>
+        <TransactionSummary
+          gasCost={null}
+          gasUnit={"ETH"}
+          tipAmount={tipAmount}
+          tipUnit={"USDC"}
+          finalAmount={(tipAmount && isAmountValid)? amount - tipAmount : null}
+          finalAmountUnit={"USDC"}
+        />
       </form>
     </div>
   );
