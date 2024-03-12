@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { useNetworkStore } from "@/app/store/useNetworkConfig";
-import { TransferModal } from "../TransferModal";
+import { TransferModal } from "./TransferModal";
 import { useTransferModalStore } from "@/app/store/useTransferModalStore";
-import SwapButton from "../SwapButton";
+import SwapButton from "./SwapButton";
 import { useTransferFormStore } from "@/app/store/useTransferFormStore";
 import SelectChain from "./SelectChain";
 import AddressInput from "./AddressInput";
