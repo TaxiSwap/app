@@ -2,7 +2,7 @@ import React from 'react';
 
 interface AmountInputProps {
   value: number;
-  balance: number;
+  balance: number | null;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isValid: boolean;
   onMaxClick?: () => void; 
@@ -45,7 +45,7 @@ const AmountInput: React.FC<AmountInputProps> = ({
       </div>
       <div className="flex justify-between items-center mt-2">
         <span className={`text-sm ${isValid ? 'text-gray-500' : 'text-red-500'}`}>
-          Balance: {balance} USDC
+          Balance: {balance || "?"} USDC
         </span>
 
       </div>
