@@ -96,7 +96,7 @@ export async function getTipAmount(
   contractAddress: string,
   destinationDomain: number,
   provider: ethers.Provider
-): Promise<number | null> {
+): Promise<number> {
   const contractAbi = ["function getTipAmount(uint32) view returns (uint256)"];
   try {
     const contract = new ethers.Contract(
@@ -107,6 +107,6 @@ export async function getTipAmount(
     const tipAmount = await contract.getTipAmount(destinationDomain);
     return Number(ethers.formatUnits(tipAmount.toString(), 6));
   } catch (error) {
-    return null;
+    throw error
   }
 }
