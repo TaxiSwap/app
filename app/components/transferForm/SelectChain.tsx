@@ -19,25 +19,13 @@ const SelectChain: React.FC<SelectChainProps> = ({
 }) => {
   const [isHighlighted, setIsHighlighted] = useState(false);
 
-  useEffect(() => {
-    if (value) {
-      setIsHighlighted(true);
-      const timer = setTimeout(() => {
-        setIsHighlighted(false);
-      }, 3000); // Show the decoration for 3000 milliseconds (3 seconds)
-
-      // Cleanup the timeout if the component unmounts or value changes again before the timer ends
-      return () => clearTimeout(timer);
-    }
-  }, [value]); // This effect runs every time the value changes
-
   return (
     <div className="flex-grow">
       <div className="flex items-center space-x-2 mb-1">
         <label className="block text-sm font-medium text-gray-700">
           {label}{" "}
         </label>
-        {errorMessage && (
+        {errorMessage && value && (
           <div className="text-red-500 italic text-xs mt-2 ">
             Warning:
             {onErrorClick && (
@@ -55,12 +43,15 @@ const SelectChain: React.FC<SelectChainProps> = ({
         )}
       </div>
       <select
-        value={value}
+        value={value || ""}
         onChange={onChange}
         className={`mt-1 block w-full px-4 py-2 text-base font-normal bg-gray-200 border ${
           isHighlighted ? "border-green-500" : "border-gray-300"
         } rounded focus:outline-none focus:border-blue-500 transition duration-300`}
       >
+        <option value="" disabled={!!value}>
+          Select a network...
+        </option>
         {Object.entries(networks).map(([chainId, networkName]) => (
           <option key={chainId} value={chainId}>
             {networkName}
