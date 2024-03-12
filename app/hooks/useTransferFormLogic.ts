@@ -4,7 +4,7 @@ import { useNetworkStore } from "@/app/store/useNetworkConfig";
 import { useTransferFormStore } from "../store/useTransferFormStore";
 import { getTokenBalance, getTipAmount } from "@/app/blockchain/utils";
 import { Provider, Signer, ethers } from "ethers";
-import { useTransferStateStore } from "@/app/store/useTransferStateStore";
+import { useTransferModalStore } from "@/app/store/useTransferModalStore";
 import { approveTokenTransfer, callReceiveMessage, depositForBurn } from "@/app/blockchain/actions"
 
 export const useTransferFormLogic = () => {
@@ -22,7 +22,8 @@ export const useTransferFormLogic = () => {
     setSteps,
     updateStepStatus,
     resetSteps,
-  } = useTransferStateStore();
+    setIsTransferCompleted
+  } = useTransferModalStore();
 
   const {
     sourceChain,
@@ -176,6 +177,8 @@ export const useTransferFormLogic = () => {
   const openModalWithResetState = () => {
     resetSteps(); // Reset step statuses
     setModalError(null); // Clear any previous error messages
+    setModalCanClose(false);
+    setIsTransferCompleted(false);
     setIsModalOpen(true);
   };
 
@@ -236,6 +239,8 @@ export const useTransferFormLogic = () => {
 
         if (response.ok) {
           // showMessage("Message receive succeeded: " + data.hash, "success");
+          setIsTransferCompleted(true);
+          setModalCanClose(true);
         } else {
           throw new Error(data.error || "Unknown Error");
         }
@@ -250,6 +255,7 @@ export const useTransferFormLogic = () => {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
       setModalError(errorMessage);
+      setModalCanClose(true);
       updateStepStatus(currentStep, "error");
     }
   };

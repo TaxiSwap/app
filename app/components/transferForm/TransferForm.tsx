@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useNetworkStore } from "@/app/store/useNetworkConfig";
-import { StatusModal } from "../StatusModal";
+import { TransferModal } from "../TransferModal";
 import { useTransferModalStore } from "@/app/store/useTransferModalStore";
 import SwapButton from "../SwapButton";
 import { useTransferFormStore } from "@/app/store/useTransferFormStore";
@@ -48,7 +48,7 @@ const TransferForm = () => {
 
   return (
     <div className="transfer-form bg-white p-8 rounded-lg text-gray-800 max-w-2xl mx-auto my-10 shadow">
-      <StatusModal
+      <TransferModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Transfer Progress"

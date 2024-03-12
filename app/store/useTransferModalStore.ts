@@ -6,7 +6,7 @@ interface Step {
   requiresWalletInteraction?: boolean;
 }
 
-interface TransferStateStore {
+interface TransferModalStore {
   steps: Step[];
   isModalOpen: boolean;
   modalError: string | null;
@@ -35,7 +35,7 @@ const initialSteps: Step[] = [
   { name: "Wait for transfer. This takes a while", status: "pending" },
 ];
 
-export const useTransferStateStore = create<TransferStateStore>((set) => ({
+export const useTransferModalStore = create<TransferModalStore>((set) => ({
   steps: initialSteps,
   isModalOpen: false,
   modalError: null,

@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface StatusModalProps {
+export interface TransferModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -14,7 +14,7 @@ export interface StatusModalProps {
   transferCompleted: boolean;
 }
 
-export const StatusModal: React.FC<StatusModalProps> = ({
+export const TransferModal: React.FC<TransferModalProps> = ({
   isOpen,
   onClose,
   title,
