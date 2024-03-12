@@ -9,8 +9,8 @@ export interface StatusModalProps {
     status: "pending" | "completed" | "working" | "error";
     requiresWalletInteraction?: boolean;
   }>;
-  errorMessage?: string;
-  canClose: boolean;
+  errorMessage?: string | null;
+  canClose: boolean | null;
   transferCompleted: boolean;
 }
 
