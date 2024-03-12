@@ -8,9 +8,17 @@ interface Step {
 
 interface TransferStateStore {
   steps: Step[];
+  isModalOpen: boolean;
+  modalError: string | null;
+  modalCanClose: boolean;
+  isTransferCompleted: boolean;
+  setIsModalOpen: (isOpen: boolean) => void;
+  setModalError: (errorMessage: string | null) => void;
+  setModalCanClose: (canClose: boolean) => void;
   setSteps: (steps: Step[]) => void;
   updateStepStatus: (stepIndex: number, status: Step["status"]) => void;
   resetSteps: () => void;
+  setIsTransferCompleted: (isCompleted: boolean) => void;
 }
 
 const initialSteps: Step[] = [
@@ -29,7 +37,16 @@ const initialSteps: Step[] = [
 
 export const useTransferStateStore = create<TransferStateStore>((set) => ({
   steps: initialSteps,
+  isModalOpen: false,
+  modalError: null,
+  modalCanClose: false,
+  isTransferCompleted: false,
+  setIsModalOpen: (isOpen) => set(() => ({ isModalOpen: isOpen })),
+  setModalError: (errorMessage) => set(() => ({ modalError: errorMessage })),
+  setModalCanClose: (canClose) => set(() => ({ modalCanClose: canClose })),
   setSteps: (steps) => set(() => ({ steps })),
+  setIsTransferCompleted: (isCompleted) =>
+    set(() => ({ isTransferCompleted: isCompleted })),
   updateStepStatus: (stepIndex, status) =>
     set((state) => ({
       steps: state.steps.map((step, index) =>
