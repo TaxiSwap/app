@@ -1,3 +1,4 @@
+import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import TransferForm from "./components/transferForm/TransferForm";
 import { MessageProvider } from "./contexts/MessageContext";
@@ -8,6 +9,7 @@ export default function Home() {
       <MessageProvider>
               <Header />
               <TransferForm />
+              <Footer />
       </MessageProvider>
     </div>
   );
