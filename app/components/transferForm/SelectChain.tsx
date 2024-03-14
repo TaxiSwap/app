@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from "react";
 
 interface SelectChainProps {
@@ -49,7 +50,7 @@ const SelectChain: React.FC<SelectChainProps> = ({
           isHighlighted ? "border-green-500" : "border-gray-300"
         } rounded focus:outline-none focus:border-blue-500 transition duration-300`}
       >
-        <option value="" disabled={!!value}>
+        <option value="" disabled={ !!value}>
           Select a network...
         </option>
         {Object.entries(networks).map(([chainId, networkName]) => (
