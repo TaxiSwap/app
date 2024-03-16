@@ -5,8 +5,8 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "WhiteBridge",
-  description: "Bridge your USDC on the other side",
+  title: "TaxiSwap",
+  description: "Effortless Multi-Chain Bridging",
 };
 
 export default function RootLayout({
