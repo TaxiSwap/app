@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { PriceFetchingStrategy } from "../../../../services/priceFetching/PriceFetchingStrategy";
-import { CoinGeckoStrategy } from "../../../../services/priceFetching/CoinGeckoStrategy";
-import { CoinMarketCapStrategy } from "../../../../services/priceFetching/CoinMarketCapStrategy";
-import TokenPriceRepository from '../../../../repositories/TokenPriceRepository';
+import { PriceFetchingStrategy } from "../../../../../services/priceFetching/PriceFetchingStrategy";
+import { CoinGeckoStrategy } from "../../../../../services/priceFetching/CoinGeckoStrategy";
+import { CoinMarketCapStrategy } from "../../../../../services/priceFetching/CoinMarketCapStrategy";
+import TokenPriceRepository from "../../../../../repositories/TokenPriceRepository";
+import { NextApiRequest } from "next";
 
 async function fetchPriceWithFallback(
   tokenId: string,
@@ -25,26 +26,35 @@ async function fetchPriceWithFallback(
   return null; // Return null if all strategies fail
 }
 
-export async function GET(request: Request): Promise<NextResponse> {
-  const url = new URL(request.url);
-  const tokenId = url.searchParams.get("tokenId");
-  const tokenPriceRepository = new TokenPriceRepository();
+export async function GET(req: NextApiRequest,  { params }: { params: { tokenId: string }}) {
+  const  tokenId  = params.tokenId;
+  const tokenIdValue = Array.isArray(tokenId)
+    ? tokenId[0]
+    : tokenId;
 
-  if (!tokenId) {
+  if (!tokenIdValue) {
     return NextResponse.json(
       { error: "Token ID is required." },
       { status: 400 }
     );
   }
 
+  const tokenPriceRepository = new TokenPriceRepository();
   const strategies = [new CoinGeckoStrategy(), new CoinMarketCapStrategy()];
-  const shuffledStrategies = strategies.sort(() => Math.random() - 0.5);
+  const shuffledStrategies = strategies.sort(() => 0.5 - Math.random());
 
   try {
-    const result = await fetchPriceWithFallback(tokenId, shuffledStrategies);
+    const result = await fetchPriceWithFallback(
+      tokenIdValue,
+      shuffledStrategies
+    );
     if (result) {
-      await tokenPriceRepository.saveTokenPrice(tokenId, result.price, result.provider);
-      return NextResponse.json(result);
+      await tokenPriceRepository.saveTokenPrice(
+        tokenIdValue,
+        result.price,
+        result.provider
+      );
+      return NextResponse.json({ result }, { status: 200 });
     } else {
       return NextResponse.json(
         { error: "Failed to fetch token price from all providers." },
@@ -52,7 +62,6 @@ export async function GET(request: Request): Promise<NextResponse> {
       );
     }
   } catch (error) {
-    // If an unexpected error occurs, log it and return a 500 error response
     console.error("Unexpected error:", error);
     return NextResponse.json(
       { error: "An unexpected error occurred." },
