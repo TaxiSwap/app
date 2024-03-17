@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { PriceFetchingStrategy } from "../../../../services/priceFetching/PriceFetchingStrategy";
 import { CoinGeckoStrategy } from "../../../../services/priceFetching/CoinGeckoStrategy";
 import { CoinMarketCapStrategy } from "../../../../services/priceFetching/CoinMarketCapStrategy";
+import TokenPriceRepository from '../../../../repositories/TokenPriceRepository';
 
 async function fetchPriceWithFallback(
   tokenId: string,
@@ -27,6 +28,7 @@ async function fetchPriceWithFallback(
 export async function GET(request: Request): Promise<NextResponse> {
   const url = new URL(request.url);
   const tokenId = url.searchParams.get("tokenId");
+  const tokenPriceRepository = new TokenPriceRepository();
 
   if (!tokenId) {
     return NextResponse.json(
@@ -41,6 +43,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   try {
     const result = await fetchPriceWithFallback(tokenId, shuffledStrategies);
     if (result) {
+      await tokenPriceRepository.saveTokenPrice(tokenId, result.price, result.provider);
       return NextResponse.json(result);
     } else {
       return NextResponse.json(
