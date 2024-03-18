@@ -1,4 +1,4 @@
-import { PriceFetchingStrategy } from "./priceFetching/PriceFetchingStrategy";
+import { PriceFetchingStrategy } from "./tokenPriceFetching/PriceFetchingStrategy";
 
 export class TokenPriceService {
   constructor(private priceFetchingStrategy: PriceFetchingStrategy) {}

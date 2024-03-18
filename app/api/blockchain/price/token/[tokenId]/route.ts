@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { PriceFetchingStrategy } from "../../../../../services/priceFetching/PriceFetchingStrategy";
-import { CoinGeckoStrategy } from "../../../../../services/priceFetching/CoinGeckoStrategy";
-import { CoinMarketCapStrategy } from "../../../../../services/priceFetching/CoinMarketCapStrategy";
+import { PriceFetchingStrategy } from "../../../../../services/tokenPriceFetching/PriceFetchingStrategy";
+import { CoinGeckoStrategy } from "../../../../../services/tokenPriceFetching/CoinGeckoStrategy";
+import { CoinMarketCapStrategy } from "../../../../../services/tokenPriceFetching/CoinMarketCapStrategy";
 import TokenPriceRepository from "../../../../../repositories/TokenPriceRepository";
 
 async function fetchPriceWithFallback(
