@@ -3,7 +3,6 @@ import { PriceFetchingStrategy } from "../../../../../services/priceFetching/Pri
 import { CoinGeckoStrategy } from "../../../../../services/priceFetching/CoinGeckoStrategy";
 import { CoinMarketCapStrategy } from "../../../../../services/priceFetching/CoinMarketCapStrategy";
 import TokenPriceRepository from "../../../../../repositories/TokenPriceRepository";
-import { NextApiRequest } from "next";
 
 async function fetchPriceWithFallback(
   tokenId: string,
@@ -26,7 +25,7 @@ async function fetchPriceWithFallback(
   return null; // Return null if all strategies fail
 }
 
-export async function GET(req: NextApiRequest,  { params }: { params: { tokenId: string }}) {
+export async function GET(req: Request,  { params }: { params: { tokenId: string }}) {
   const  tokenId  = params.tokenId;
   const tokenIdValue = Array.isArray(tokenId)
     ? tokenId[0]
