@@ -8,7 +8,7 @@ interface GasPriceDocument {
   price: bigint;
 }
 
-class TokenPriceRepository {
+class GasPriceRepository {
   private db: DocumentScope<GasPriceDocument>;
   private nanoInstance: ServerScope;
 
@@ -45,4 +45,4 @@ class TokenPriceRepository {
   }
 }
 
-export default TokenPriceRepository;
+export default GasPriceRepository;
