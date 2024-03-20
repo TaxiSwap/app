@@ -22,6 +22,7 @@ export class CoinMarketCapStrategy implements IPriceFetchingStrategy {
         method: "GET",
         headers: {
           "X-CMC_PRO_API_KEY": API_KEY,
+          'Cache-Control': 'no-cache'
         },
         cache: "no-store",
       });
