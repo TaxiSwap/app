@@ -1,48 +1,10 @@
-import { ServerScope, DocumentScope } from "nano";
-import nano from "nano";
+import { connectToDatabase } from "../services/mongodb";
+import { IGasPrice } from "../models/IGasPrice";
 
-interface GasPriceDocument {
-  _id: string;
-  type: string;
-  chainId: string;
-  price: bigint;
-}
-
-class GasPriceRepository {
-  private db: DocumentScope<GasPriceDocument>;
-  private nanoInstance: ServerScope;
-
-  constructor() {
-    const COUCHDB_URL = process.env.COUCHDB_URL ?? "http://localhost:5984";
-    const COUCHDB_USER = process.env.COUCHDB_USER ?? "defaultUser";
-    const COUCHDB_PASSWORD = process.env.COUCHDB_PASSWORD ?? "defaultPassword";
-    const COUCHDB_DBNAME = process.env.COUCHDB_DBNAME ?? "defaultDBName";
-
-    this.nanoInstance = nano({
-      url: COUCHDB_URL,
-      requestDefaults: {
-        auth: {
-          username: COUCHDB_USER,
-          password: COUCHDB_PASSWORD,
-        },
-      },
-    });
-
-    this.db = this.nanoInstance.use<GasPriceDocument>(COUCHDB_DBNAME);
-  }
-
-  async saveGasPrice(
-    chainId: string,
-    price: bigint,
-  ): Promise<void> {
-    const doc: GasPriceDocument = {
-      _id: new Date().toISOString(),
-      type: "gasPrice",
-      chainId,
-      price,
-    };
-    await this.db.insert(doc);
+export class GasPriceRepository {
+  async save(gasPrice: IGasPrice) {
+    const db = await connectToDatabase();
+    const collection = db.collection<IGasPrice>("gasPrices");
+    return await collection.insertOne(gasPrice);
   }
 }
-
-export default GasPriceRepository;
