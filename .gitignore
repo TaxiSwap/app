@@ -36,5 +36,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# couchdb data
-/couchdb_data
+# mongo data
+/database
