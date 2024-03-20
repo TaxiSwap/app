@@ -25,8 +25,8 @@ export async function GET(
   const gasPriceRepository = new GasPriceRepository();
   const evmGasPriceFetchingStrategy = new EvmGasPriceFetchingStrategy();
   const gasPriceService = new GasPriceService(
-    evmGasPriceFetchingStrategy,
-    gasPriceRepository
+    gasPriceRepository,
+    evmGasPriceFetchingStrategy
   );
 
   try {
