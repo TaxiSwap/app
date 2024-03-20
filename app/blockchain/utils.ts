@@ -37,7 +37,8 @@ export async function pollAttestationStatus(
   let attestationResponse: AttestationResponse = { status: "pending" };
   while (attestationResponse.status !== "complete") {
     const response = await fetch(
-      `${attestationBaseUrl}/attestations/${messageHash}`
+      `${attestationBaseUrl}/attestations/${messageHash}`,
+      { cache: "no-store" }
     );
     attestationResponse = await response.json();
     if (attestationResponse.status === "complete") {
@@ -107,6 +108,6 @@ export async function getTipAmount(
     const tipAmount = await contract.getTipAmount(destinationDomain);
     return Number(ethers.formatUnits(tipAmount.toString(), 6));
   } catch (error) {
-    throw error
+    throw error;
   }
 }

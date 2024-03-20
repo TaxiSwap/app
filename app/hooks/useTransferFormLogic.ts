@@ -5,7 +5,11 @@ import { useTransferFormStore } from "../store/useTransferFormStore";
 import { getTokenBalance, getTipAmount } from "@/app/blockchain/utils";
 import { Provider, Signer, ethers } from "ethers";
 import { useTransferModalStore } from "@/app/store/useTransferModalStore";
-import { approveTokenTransfer, callReceiveMessage, depositForBurn } from "@/app/blockchain/actions"
+import {
+  approveTokenTransfer,
+  callReceiveMessage,
+  depositForBurn,
+} from "@/app/blockchain/actions";
 
 export const useTransferFormLogic = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -22,7 +26,7 @@ export const useTransferFormLogic = () => {
     setSteps,
     updateStepStatus,
     resetSteps,
-    setIsTransferCompleted
+    setIsTransferCompleted,
   } = useTransferModalStore();
 
   const {
@@ -52,7 +56,7 @@ export const useTransferFormLogic = () => {
     if (!provider || !config) return;
 
     const fetchTipAmount = async () => {
-      if(!sourceChain || !destinationChain || !provider) return
+      if (!sourceChain || !destinationChain || !provider) return;
       try {
         const tipAmount = await getTipAmount(
           config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
@@ -62,7 +66,7 @@ export const useTransferFormLogic = () => {
         console.log("Tip: ", tipAmount);
         setTipAmount(tipAmount || null);
       } catch (error) {
-        console.error(error)
+        console.error(error);
       }
     };
 
@@ -234,6 +238,7 @@ export const useTransferFormLogic = () => {
             sourceChain,
             destinationChain,
           }),
+          cache: "no-store",
         });
         const data = await response.json();
 
@@ -276,6 +281,6 @@ export const useTransferFormLogic = () => {
     handleAmountChange,
     handleAddMax,
     handleNetworkSwitch,
-    handleSubmit
+    handleSubmit,
   };
 };

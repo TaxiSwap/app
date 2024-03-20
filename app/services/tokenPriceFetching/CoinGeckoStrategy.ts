@@ -13,6 +13,7 @@ export class CoinGeckoStrategy implements IPriceFetchingStrategy {
         headers: {
           "x-cg-demo-api-key": API_KEY,
         },
+        cache: "no-store",
       });
 
       if (!response.ok) {
