@@ -1,10 +1,10 @@
-import { PriceFetchingStrategy } from "./tokenPriceFetching/PriceFetchingStrategy";
+import { IPriceFetchingStrategy } from "./tokenPriceFetching/IPriceFetchingStrategy";
 import { TokenPriceRepository } from "../repositories/TokenPriceRepository";
 
 export class TokenPriceService {
   constructor(
     private tokenPriceRepository: TokenPriceRepository,
-    private strategies: PriceFetchingStrategy[]
+    private strategies: IPriceFetchingStrategy[]
   ) {}
 
   async fetchAndStoreTokenPrice(tokenId: string) {

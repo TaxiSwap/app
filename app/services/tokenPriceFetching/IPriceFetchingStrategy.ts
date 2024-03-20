@@ -1,3 +1,3 @@
-export interface PriceFetchingStrategy {
+export interface IPriceFetchingStrategy {
   fetchTokenPrice(tokenId: string): Promise<number>;
 }

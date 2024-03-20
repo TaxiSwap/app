@@ -1,4 +1,4 @@
-import { PriceFetchingStrategy } from "./PriceFetchingStrategy";
+import { IPriceFetchingStrategy } from "./IPriceFetchingStrategy";
 
 type TokenMap = {
   [key: string]: number;
@@ -9,7 +9,7 @@ const coinmarketcapTokenMap: TokenMap = {
   "avalanche-2": 5805,
 };
 
-export class CoinMarketCapStrategy implements PriceFetchingStrategy {
+export class CoinMarketCapStrategy implements IPriceFetchingStrategy {
   async fetchTokenPrice(tokenId: string): Promise<number> {
     const coinmarketcapTokenId = coinmarketcapTokenMap[tokenId];
     const API_KEY = process.env.COINMARKETCAP_API_KEY as string;

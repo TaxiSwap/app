@@ -1,6 +1,6 @@
-import { PriceFetchingStrategy } from "./PriceFetchingStrategy";
+import { IPriceFetchingStrategy } from "./IPriceFetchingStrategy";
 
-export class CoinGeckoStrategy implements PriceFetchingStrategy {
+export class CoinGeckoStrategy implements IPriceFetchingStrategy {
   async fetchTokenPrice(tokenId: string): Promise<number> {
     const API_KEY = process.env.COINGECKO_API_KEY as string;
     const url = `https://api.coingecko.com/api/v3/simple/price?ids=${encodeURIComponent(
