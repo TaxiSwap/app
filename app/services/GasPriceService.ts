@@ -1,10 +1,10 @@
-import { GasPriceFetchingStrategy } from "./gasPriceFetching/GasPriceFetchingStrategy"; // Ensure this interface exists
+import { IGasPriceFetchingStrategy } from "./gasPriceFetching/IGasPriceFetchingStrategy"; // Ensure this interface exists
 import { GasPriceRepository } from "../repositories/GasPriceRepository";
 import { chainConfigs } from "../config/ChainConfigMap";
 
 export class GasPriceService {
   constructor(
-    private gasPriceFetchingStrategy: GasPriceFetchingStrategy, // Use interface for strategy
+    private gasPriceFetchingStrategy: IGasPriceFetchingStrategy, // Use interface for strategy
     private gasPriceRepository: GasPriceRepository
   ) {}
 
