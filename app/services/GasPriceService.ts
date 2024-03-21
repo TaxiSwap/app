@@ -24,7 +24,7 @@ export class GasPriceService {
         providerUrl
       );
       if (gasPrice != null && gasPrice > 0) {
-        await this.gasPriceRepository.save({ chainId, price: gasPrice }); // Adjust according to your repository method signature
+        await this.gasPriceRepository.save({ chainId, price: gasPrice, timestamp: new Date() });
         return gasPrice;
       } else {
         console.warn(`Received invalid gas price for chain ID ${chainId}.`);

@@ -17,6 +17,7 @@ export class TokenPriceService {
             tokenId: tokenId,
             price: price,
             provider: strategy.constructor.name,
+            timestamp: new Date(),
           });
           return { price, provider: strategy.constructor.name };
         }
@@ -25,7 +26,7 @@ export class TokenPriceService {
           error instanceof Error
             ? error.message
             : "An unexpected error occurred";
-        throw new Error(errorMessage);
+        console.log(errorMessage);
       }
     }
     throw new Error("Failed to fetch token price from all providers.");
