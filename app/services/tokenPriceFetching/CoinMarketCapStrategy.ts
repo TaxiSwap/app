@@ -7,6 +7,7 @@ type TokenMap = {
 const coinmarketcapTokenMap: TokenMap = {
   ethereum: 1027,
   "avalanche-2": 5805,
+  "matic-network": 3890,
 };
 
 export class CoinMarketCapStrategy implements IPriceFetchingStrategy {
@@ -22,7 +23,7 @@ export class CoinMarketCapStrategy implements IPriceFetchingStrategy {
         method: "GET",
         headers: {
           "X-CMC_PRO_API_KEY": API_KEY,
-          'Cache-Control': 'no-cache'
+          "Cache-Control": "no-cache",
         },
         cache: "no-store",
       });
