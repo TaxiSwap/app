@@ -1,6 +1,6 @@
 import { GasPriceService } from "./GasPriceService";
 import { TokenPriceService } from "./TokenPriceService";
-import { chainConfigs } from "../config/ChainConfigMap";
+import { chainConfigs, GasAmounts } from "../config/ChainConfigMap";
 
 export class TransactionCostService {
   constructor(
@@ -9,11 +9,11 @@ export class TransactionCostService {
   ) {}
 
   async calculateTransactionCost(
-    transactionType: string,
+    transactionType: keyof GasAmounts,
     chainId: string
   ): Promise<{ costInETH: bigint; costInUSD: number } | null> {
     try {
-      const gasAmount = chainConfigs[chainId]?.receiveGasAmount;
+      const gasAmount = chainConfigs[chainId]?.transactionGasAmount[transactionType];
       if (!gasAmount) {
         console.error("Transaction type or chain ID is not supported");
         return null;

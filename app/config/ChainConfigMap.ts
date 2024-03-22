@@ -1,10 +1,16 @@
+export interface GasAmounts {
+  receive: bigint;
+  approve: bigint;
+  deposit: bigint;
+}
+
 interface ChainConfig {
   providerUrl: string | undefined;
   whiteBridgeContractAddress: string;
   messageTransmitterAddress: string;
   attestationUrl: string;
   USDCContractAddress: string;
-  receiveGasAmount: bigint;
+  transactionGasAmount: GasAmounts
   nativeTokenSymbol: string;
 }
 
@@ -19,7 +25,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api.circle.com",
-      receiveGasAmount: BigInt("150000"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "ethereum"
     },
     '43114': {
@@ -28,7 +38,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api.circle.com",
-      receiveGasAmount: BigInt("150000"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "avalanche-2"
     },
     '10': {
@@ -37,7 +51,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api.circle.com",
-      receiveGasAmount: BigInt("159426 "),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "ethereum"
     },
     '42161': {
@@ -46,7 +64,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api.circle.com",
-      receiveGasAmount: BigInt("378225"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "ethereum"
     },
     '8453': {
@@ -55,7 +77,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api.circle.com",
-      receiveGasAmount: BigInt("150000"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "ethereum"
     },
     '137': {
@@ -64,7 +90,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api.circle.com",
-      receiveGasAmount: BigInt("150000"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "matic-network"
     },
     '11155111': { 
@@ -73,7 +103,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api-sandbox.circle.com",
-      receiveGasAmount: BigInt("150000"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "ethereum"
     },
     '43113': { 
@@ -82,7 +116,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "0xa9fb1b3009dcb79e2fe346c16a604b8fa8ae0a79",
       attestationUrl: "https://iris-api-sandbox.circle.com",
-      receiveGasAmount: BigInt("150000"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "avalanche-2"
     },
     '11155420': {
@@ -91,7 +129,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api-sandbox.circle.com",
-      receiveGasAmount: BigInt("150000"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "ethereum"
     },
     '421614': {
@@ -100,7 +142,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api-sandbox.circle.com",
-      receiveGasAmount: BigInt("378225"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "ethereum"
     },
     '84532': {
@@ -109,7 +155,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "",
       messageTransmitterAddress: "",
       attestationUrl: "https://iris-api-sandbox.circle.com",
-      receiveGasAmount: BigInt("150000"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "ethereum"
     },
     '80001': {
@@ -118,7 +168,11 @@ export const chainConfigs: ChainConfigMap = {
       whiteBridgeContractAddress: "0x3A850eF482E77A1A3be32449796c33468992b71E",
       messageTransmitterAddress: "0xe09A679F56207EF33F5b9d8fb4499Ec00792eA73",
       attestationUrl: "https://iris-api-sandbox.circle.com",
-      receiveGasAmount: BigInt("150000"),
+      transactionGasAmount: {
+        receive: BigInt("150000"),
+        approve: BigInt("150000"),
+        deposit: BigInt("150000")
+      },
       nativeTokenSymbol: "matic-network"
     }
   };
