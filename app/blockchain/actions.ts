@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import erc20abi from "./contracts/erc20.abi.json";
 import tokenMessengerAbi from "./contracts/tokenMessenger.abi.json";
 import messageTransmitterAbi from "./contracts/MessageTransmitter.abi.json";
-import whiteBridgeAbi from "./contracts/WhiteBridge.abi.json";
+import taxiSwapAbi from "./contracts/TaxiSwap.abi.json";
 import { addressToBytes32 } from "./utils";
 
 // Function to approve token transfer
@@ -33,14 +33,14 @@ export async function depositForBurn(
   signer: ethers.Signer
 ) {
 
-  const whiteBridgeContract = new ethers.Contract(
+  const taxiSwapContract = new ethers.Contract(
     tokenMessengerAddress,
-    whiteBridgeAbi,
+    taxiSwapAbi,
     signer
   );
 
   try {
-    const tx = await whiteBridgeContract
+    const tx = await taxiSwapContract
       .sendMessage(
         amount,
         destinationDomain,

@@ -22,7 +22,7 @@ export interface NetworkConfig {
   contracts: {
     [key: string]: {
       TOKEN_MESSENGER_CONTRACT_ADDRESS: string;
-      WHITEBRIDGE_CONTRACT_ADDRESS: string;
+      TAXISWAP_CONTRACT_ADDRESS: string;
       USDC_CONTRACT_ADDRESS: string;
       MESSAGE_TRANSMITTER_CONTRACT_ADDRESS: string;
       DOMAIN: number;

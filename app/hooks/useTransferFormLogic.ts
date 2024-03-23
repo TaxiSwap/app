@@ -59,7 +59,7 @@ export const useTransferFormLogic = () => {
       if (!sourceChain || !destinationChain || !provider) return;
       try {
         const tipAmount = await getTipAmount(
-          config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
+          config.contracts[sourceChain]?.TAXISWAP_CONTRACT_ADDRESS,
           config.contracts[destinationChain]?.DOMAIN,
           provider as Provider
         );
@@ -205,7 +205,7 @@ export const useTransferFormLogic = () => {
       updateStepStatus(currentStep, "working");
       const approvalTx = await approveTokenTransfer(
         usdcAddress,
-        config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
+        config.contracts[sourceChain]?.TAXISWAP_CONTRACT_ADDRESS,
         ethers.parseUnits(amount.toString(), 6),
         signer as Signer
       );
@@ -215,7 +215,7 @@ export const useTransferFormLogic = () => {
       // Step 2: Deposit token to contract (Sign with wallet)
       updateStepStatus(currentStep, "working");
       const depositTx = await depositForBurn(
-        config.contracts[sourceChain]?.WHITEBRIDGE_CONTRACT_ADDRESS,
+        config.contracts[sourceChain]?.TAXISWAP_CONTRACT_ADDRESS,
         ethers.parseUnits(amount.toString(), 6),
         config.contracts[destinationChain]?.DOMAIN,
         destinationAddress,

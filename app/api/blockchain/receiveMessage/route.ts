@@ -29,9 +29,9 @@ export async function POST(request: Request) {
     // Check if tx comes from own contracts
     if (
       transactionReceipt?.to !=
-      chainConfigs[sourceChain]?.whiteBridgeContractAddress
+      chainConfigs[sourceChain]?.taxiSwapContractAddress
     ) {
-      throw new Error("Transaction not from whitebridge contract");
+      throw new Error("Transaction not from TaxiSwap contract");
     }
     // Get message
     const { messageHash, messageBytes } = await getMessageHashFromTransaction(
