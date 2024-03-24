@@ -10,6 +10,7 @@ import {
   callReceiveMessage,
   depositForBurn,
 } from "@/app/blockchain/actions";
+import { chainConfigs } from "../config/ChainConfigMap";
 
 export const useTransferFormLogic = () => {
   const { account, switchNetwork, networkChainId, signer, provider } =
@@ -51,6 +52,8 @@ export const useTransferFormLogic = () => {
   const [isTransferValid, setIsTransferValid] = useState<boolean>(false);
   const [isSourceNetworkAsWallet, setIsSourceNetworkAsWallet] =
     useState<boolean>(false);
+  const [estimatedUserGasCostInEther, setEstimatedUserGasCostInEther] =
+    useState<number | null>(null);
 
   useEffect(() => {
     if (!provider || !config) return;
@@ -63,7 +66,6 @@ export const useTransferFormLogic = () => {
           config.contracts[destinationChain]?.DOMAIN,
           provider as Provider
         );
-        console.log("Tip: ", tipAmount);
         setTipAmount(tipAmount || null);
       } catch (error) {
         console.error(error);
@@ -79,7 +81,7 @@ export const useTransferFormLogic = () => {
         );
         setUserBalance(balance);
       } catch (error) {
-        console.error("Failed to fetch token balance:", error);
+        // console.error("Failed to fetch token balance:", error);
         setUserBalance(null);
       }
     };
@@ -115,6 +117,38 @@ export const useTransferFormLogic = () => {
       );
     };
 
+    const estimateUserGasCost = async () => {
+      try {
+        if (!provider || !sourceChain) {
+          throw new Error("Provider or sourceChain is not available.");
+        }
+
+        const transactionGasAmounts =
+        chainConfigs[sourceChain]?.transactionGasAmount;
+        if (!transactionGasAmounts) {
+          throw new Error("TransactionGasAmount is undefined.");
+        }
+
+        const gasPrice = (await provider.getFeeData()).gasPrice;
+        if (!gasPrice) throw new Error("Cannot get gas price");
+
+        const { approve, deposit } = transactionGasAmounts;
+        if (!approve || !deposit) {
+          throw new Error("Gas amounts for operations are not defined.");
+        }
+
+        const totalGasCost = (approve + deposit) * gasPrice;
+        const totalGasCostInEther = ethers.formatEther(totalGasCost);
+
+        setEstimatedUserGasCostInEther(Number(totalGasCostInEther));
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "An unknown error occurred";
+        // console.error("Failed to estimate gas cost:", errorMessage);
+        setEstimatedUserGasCostInEther(null);
+      }
+    };
+
     fetchTipAmount();
     fetchUserBalance();
     validateDestinationAddress();
@@ -122,6 +156,7 @@ export const useTransferFormLogic = () => {
     validateAmount();
     validateSourceChainAsWallet();
     validateTransfer();
+    estimateUserGasCost();
   }, [
     account,
     amount,
@@ -273,6 +308,7 @@ export const useTransferFormLogic = () => {
     isDestinationChainValid,
     isAmountValid,
     isTransferValid,
+    estimatedUserGasCostInEther,
     handleSourceChange,
     handleSwapChains,
     handleDestinationChange,
