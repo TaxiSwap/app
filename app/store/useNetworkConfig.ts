@@ -27,8 +27,17 @@ export const useNetworkStore = create<NetworkState>()(
         }
       }),
       {
-        name: "network-configuration-storage", 
-        storage: createJSONStorage(() => sessionStorage)
+        name: "network-configuration-storage",
+        storage: createJSONStorage(() => sessionStorage),
+        partialize: (state) => ({ networkType: state.networkType }),
+        onRehydrateStorage: () => (state, error) => {
+          // This function runs after the store has been rehydrated from sessionStorage
+          if (state) {
+            // Check if rehydration occurred
+            const currentNetworkType = state.networkType;
+            state.config = getConfig(currentNetworkType); 
+          }
+        },
       }
     )
   )
