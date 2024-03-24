@@ -54,6 +54,7 @@ export const useTransferFormLogic = () => {
     useState<boolean>(false);
   const [estimatedUserGasCostInEther, setEstimatedUserGasCostInEther] =
     useState<number | null>(null);
+  const [userGasSymbol, setUserGasSymbol] = useState<string | null>(null);
 
   useEffect(() => {
     if (!provider || !config) return;
@@ -124,7 +125,7 @@ export const useTransferFormLogic = () => {
         }
 
         const transactionGasAmounts =
-        chainConfigs[sourceChain]?.transactionGasAmount;
+          chainConfigs[sourceChain]?.transactionGasAmount;
         if (!transactionGasAmounts) {
           throw new Error("TransactionGasAmount is undefined.");
         }
@@ -141,11 +142,13 @@ export const useTransferFormLogic = () => {
         const totalGasCostInEther = ethers.formatEther(totalGasCost);
 
         setEstimatedUserGasCostInEther(Number(totalGasCostInEther));
+        setUserGasSymbol(chainConfigs[sourceChain]?.nativeUnitSymbol || null);
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "An unknown error occurred";
         // console.error("Failed to estimate gas cost:", errorMessage);
         setEstimatedUserGasCostInEther(null);
+        setUserGasSymbol(null);
       }
     };
 
@@ -309,6 +312,7 @@ export const useTransferFormLogic = () => {
     isAmountValid,
     isTransferValid,
     estimatedUserGasCostInEther,
+    userGasSymbol,
     handleSourceChange,
     handleSwapChains,
     handleDestinationChange,

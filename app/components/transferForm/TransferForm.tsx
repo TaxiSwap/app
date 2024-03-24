@@ -43,6 +43,7 @@ const TransferForm = () => {
     isTransferValid,
     isDestinationChainValid,
     estimatedUserGasCostInEther,
+    userGasSymbol,
     handleSourceChange,
     handleSwapChains,
     handleDestinationChange,
@@ -123,7 +124,7 @@ const TransferForm = () => {
         </button>
         <TransactionSummary
           gasCost={estimatedUserGasCostInEther}
-          gasUnit={"ETH"}
+          gasUnit={userGasSymbol}
           tipAmount={tipAmount}
           tipUnit={"USDC"}
           finalAmount={(tipAmount && isAmountValid)? amount - tipAmount : null}

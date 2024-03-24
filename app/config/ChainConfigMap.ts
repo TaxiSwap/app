@@ -12,6 +12,7 @@ interface ChainConfig {
   USDCContractAddress: string;
   transactionGasAmount: GasAmounts
   nativeTokenSymbol: string;
+  nativeUnitSymbol: string;
 }
 
 interface ChainConfigMap {
@@ -30,7 +31,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "ethereum"
+      nativeTokenSymbol: "ethereum",
+      nativeUnitSymbol: "ETH"
     },
     '43114': {
       providerUrl: process.env.PROVIDER_URL_AVALANCHE,
@@ -43,7 +45,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "avalanche-2"
+      nativeTokenSymbol: "avalanche-2",
+      nativeUnitSymbol: "AVAX"
     },
     '10': {
       providerUrl: process.env.PROVIDER_URL_OP_MAINNET,
@@ -56,7 +59,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "ethereum"
+      nativeTokenSymbol: "ethereum",
+      nativeUnitSymbol: "ETH"
     },
     '42161': {
       providerUrl: process.env.PROVIDER_URL_ARBITRUM,
@@ -69,7 +73,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "ethereum"
+      nativeTokenSymbol: "ethereum",
+      nativeUnitSymbol: "ETH"
     },
     '8453': {
       providerUrl: process.env.PROVIDER_URL_BASE,
@@ -82,7 +87,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "ethereum"
+      nativeTokenSymbol: "ethereum",
+      nativeUnitSymbol: "ETH"
     },
     '137': {
       providerUrl: process.env.PROVIDER_URL_POLYGON,
@@ -95,7 +101,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "matic-network"
+      nativeTokenSymbol: "matic-network",
+      nativeUnitSymbol: "MATIC"
     },
     '11155111': { 
       providerUrl: process.env.PROVIDER_URL_SEPOLIA,
@@ -108,7 +115,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "ethereum"
+      nativeTokenSymbol: "ethereum",
+      nativeUnitSymbol: "ETH"
     },
     '43113': { 
       providerUrl: process.env.PROVIDER_URL_FUJI,
@@ -121,7 +129,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "avalanche-2"
+      nativeTokenSymbol: "avalanche-2",
+      nativeUnitSymbol: "AVAX"
     },
     '11155420': {
       providerUrl: process.env.PROVIDER_URL_OP_SEPOLIA,
@@ -134,7 +143,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "ethereum"
+      nativeTokenSymbol: "ethereum",
+      nativeUnitSymbol: "ETH"
     },
     '421614': {
       providerUrl: process.env.PROVIDER_URL_ARBITRUM_SEPOLIA,
@@ -147,7 +157,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "ethereum"
+      nativeTokenSymbol: "ethereum",
+      nativeUnitSymbol: "ETH"
     },
     '84532': {
       providerUrl: process.env.PROVIDER_URL_BASE_SEPOLIA,
@@ -160,7 +171,8 @@ export const chainConfigs: ChainConfigMap = {
         approve: BigInt("150000"),
         deposit: BigInt("150000")
       },
-      nativeTokenSymbol: "ethereum"
+      nativeTokenSymbol: "ethereum",
+      nativeUnitSymbol: "ETH"
     },
     '80001': {
       providerUrl: process.env.PROVIDER_URL_MUMBAI,
@@ -170,10 +182,11 @@ export const chainConfigs: ChainConfigMap = {
       attestationUrl: "https://iris-api-sandbox.circle.com",
       transactionGasAmount: {
         receive: BigInt("150000"),
-        approve: BigInt("150000"),
-        deposit: BigInt("150000")
+        approve: BigInt("55819"),
+        deposit: BigInt("187367")
       },
-      nativeTokenSymbol: "matic-network"
+      nativeTokenSymbol: "matic-network",
+      nativeUnitSymbol: "MATIC"
     }
   };
   
