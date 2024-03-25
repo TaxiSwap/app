@@ -88,7 +88,7 @@ export async function getTokenBalance(
 
     return Number(formattedBalance);
   } catch (error) {
-    console.error("Error fetching token balance:", error);
+    // console.error("Error fetching token balance:", error);
     throw error;
   }
 }
