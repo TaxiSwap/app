@@ -123,7 +123,7 @@ const TransferForm = () => {
           NEXT
         </button>
         <TransactionSummary
-          gasCost={estimatedUserGasCostInEther}
+          gasCost={isSourceNetworkAsWallet ? estimatedUserGasCostInEther: null}
           gasUnit={userGasSymbol}
           tipAmount={tipAmount}
           tipUnit={"USDC"}

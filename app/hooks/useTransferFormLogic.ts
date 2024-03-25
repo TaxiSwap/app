@@ -69,7 +69,7 @@ export const useTransferFormLogic = () => {
         );
         setTipAmount(tipAmount || null);
       } catch (error) {
-        console.error(error);
+        // console.error(error);
       }
     };
 
@@ -122,6 +122,9 @@ export const useTransferFormLogic = () => {
       try {
         if (!provider || !sourceChain) {
           throw new Error("Provider or sourceChain is not available.");
+        }
+        if (!isSourceNetworkAsWallet) {
+          throw new Error("source not as wallet");
         }
 
         const transactionGasAmounts =
