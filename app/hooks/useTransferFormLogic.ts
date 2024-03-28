@@ -63,8 +63,8 @@ export const useTransferFormLogic = () => {
       if (!sourceChain || !destinationChain || !provider) return;
       try {
         const tipAmount = await getTipAmount(
-          config.contracts[sourceChain]?.TAXISWAP_CONTRACT_ADDRESS,
-          config.contracts[destinationChain]?.DOMAIN,
+          chainConfigs[sourceChain]?.taxiSwapContractAddress,
+          chainConfigs[sourceChain]?.domain,
           provider as Provider
         );
         setTipAmount(tipAmount || null);
@@ -77,7 +77,7 @@ export const useTransferFormLogic = () => {
       try {
         const balance = await getTokenBalance(
           account as string,
-          config.contracts[sourceChain]?.USDC_CONTRACT_ADDRESS,
+          chainConfigs[sourceChain]?.USDCContractAddress,
           provider as Provider
         );
         setUserBalance(balance);
@@ -236,7 +236,7 @@ export const useTransferFormLogic = () => {
       if (networkChainId === null) throw new Error("Network chain ID is null.");
 
       const chainIdKey = String(networkChainId);
-      const usdcAddress = config.contracts[chainIdKey]?.USDC_CONTRACT_ADDRESS;
+      const usdcAddress = chainConfigs[chainIdKey]?.USDCContractAddress;
       if (!usdcAddress)
         throw new Error(
           `USDC contract address not found for the given networkChainId: ${networkChainId}`
@@ -246,7 +246,7 @@ export const useTransferFormLogic = () => {
       updateStepStatus(currentStep, "working");
       const approvalTx = await approveTokenTransfer(
         usdcAddress,
-        config.contracts[sourceChain]?.TAXISWAP_CONTRACT_ADDRESS,
+        chainConfigs[sourceChain]?.taxiSwapContractAddress,
         ethers.parseUnits(amount.toString(), 6),
         signer as Signer
       );
@@ -256,9 +256,9 @@ export const useTransferFormLogic = () => {
       // Step 2: Deposit token to contract (Sign with wallet)
       updateStepStatus(currentStep, "working");
       const depositTx = await depositForBurn(
-        config.contracts[sourceChain]?.TAXISWAP_CONTRACT_ADDRESS,
+        chainConfigs[sourceChain]?.taxiSwapContractAddress,
         ethers.parseUnits(amount.toString(), 6),
-        config.contracts[destinationChain]?.DOMAIN,
+        chainConfigs[destinationChain]?.domain,
         destinationAddress,
         usdcAddress,
         signer as Signer

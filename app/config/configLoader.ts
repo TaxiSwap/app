@@ -19,17 +19,7 @@ export interface NetworkConfig {
       blockExplorerUrls: string[];
     };
   };
-  contracts: {
-    [key: string]: {
-      TOKEN_MESSENGER_CONTRACT_ADDRESS: string;
-      TAXISWAP_CONTRACT_ADDRESS: string;
-      USDC_CONTRACT_ADDRESS: string;
-      MESSAGE_TRANSMITTER_CONTRACT_ADDRESS: string;
-      DOMAIN: number;
-    };
-  };
   UNSUPPORTED_NETWORK: string;
-  ATTESTATION_URL: string;
 }
 
 export function getConfig(networkType: "mainnet" | "testnet"): NetworkConfig {
