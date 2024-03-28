@@ -28,8 +28,8 @@ export async function POST(request: Request) {
     );
     // Check if tx comes from own contracts
     if (
-      transactionReceipt?.to !=
-      chainConfigs[sourceChain]?.taxiSwapContractAddress
+      transactionReceipt?.to?.toLowerCase() !=
+      chainConfigs[sourceChain]?.taxiSwapContractAddress.toLowerCase()
     ) {
       throw new Error("Transaction not from TaxiSwap contract");
     }
