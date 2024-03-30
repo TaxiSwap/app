@@ -5,7 +5,7 @@ import TaxiSwapABI from "@/app/blockchain/contracts/TaxiSwap.abi.json";
 import { chainConfigs } from "@/app/config/ChainConfigMap";
 import { MdClose } from "react-icons/md";
 
-const AdminInterface: React.FC = () => {
+const ContractInterface: React.FC = () => {
   const { account, provider, signer } = useWalletStore();
   const { networkChainId } = useWalletStore();
   const [selectedChainId, setSelectedChainId] = useState("");
@@ -439,4 +439,4 @@ const AdminInterface: React.FC = () => {
   );
 };
 
-export default AdminInterface;
+export default ContractInterface;
