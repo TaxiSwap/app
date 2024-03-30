@@ -231,6 +231,7 @@ export const useTransferFormLogic = () => {
     e.preventDefault();
     openModalWithResetState();
     let currentStep = 0; // To track the current step
+    let logId = "";
 
     try {
       if (networkChainId === null) throw new Error("Network chain ID is null.");
@@ -241,6 +242,20 @@ export const useTransferFormLogic = () => {
         throw new Error(
           `USDC contract address not found for the given networkChainId: ${networkChainId}`
         );
+      const startResponse = await fetch("/api/log/transactions/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          account: account,
+          sourceChain,
+          destinationChain,
+          usdcAddress,
+          amount: amount.toString(),
+          taxiswapContract: chainConfigs[sourceChain]?.taxiSwapContractAddress
+        }),
+      });
+      const startData = await startResponse.json();
+      logId = startData.logId;
 
       // Step 1: Approve token transfer (Sign with wallet)
       updateStepStatus(currentStep, "working");
@@ -251,6 +266,17 @@ export const useTransferFormLogic = () => {
         signer as Signer
       );
       // showMessage("Approval Succeeded: " + approvalTx, "success");
+      console.log("approval:", approvalTx);
+      await fetch("/api/log/transactions/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          transactionId: logId,
+          step: currentStep,
+          stepStatus: "completed",
+          options: { approvalTx },
+        }),
+      });
       updateStepStatus(currentStep++, "completed");
 
       // Step 2: Deposit token to contract (Sign with wallet)
@@ -264,6 +290,16 @@ export const useTransferFormLogic = () => {
         signer as Signer
       );
       // showMessage("Deposit succeeded: " + depositTx, "success");
+      await fetch("/api/log/transactions/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          logId,
+          step: currentStep,
+          stepStatus: "completed",
+          options: { depositTx },
+        }),
+      });
       updateStepStatus(currentStep++, "completed");
 
       updateStepStatus(currentStep, "working");
@@ -285,6 +321,17 @@ export const useTransferFormLogic = () => {
 
         if (response.ok) {
           // showMessage("Message receive succeeded: " + data.hash, "success");
+
+          await fetch("/api/log/transactions/update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              logId,
+              step: currentStep,
+              stepStatus: "completed",
+              options: { responseData: JSON.stringify(data) }, // what to place here
+            }),
+          });
           setIsTransferCompleted(true);
           setModalCanClose(true);
         } else {
@@ -296,10 +343,23 @@ export const useTransferFormLogic = () => {
         throw Error("Unexpected Error on receive!");
       }
     } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "Unknown error";
       // showMessage(message, "error");
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
+      if (logId != "") {
+        console.log("Error inside check: ", errorMessage)
+      const errorResponse =  await fetch("/api/log/transactions/update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            logId,
+            step: currentStep,
+            stepStatus: "error",
+            options: { errorMessage },
+          }),
+        });
+        console.log("Error response : ", errorResponse)
+      }
       setModalError(errorMessage);
       setModalCanClose(true);
       updateStepStatus(currentStep, "error");
