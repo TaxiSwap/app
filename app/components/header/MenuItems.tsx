@@ -17,7 +17,7 @@ const MenuItems: React.FC<MenuItemsProps> = ({ isMenuOpen, displayMode }) => {
 
   return (
     <div className={containerClassNames}>
-      <NetworkToggle />
+      {process.env.ADMIN_FLAG === 'true' && <NetworkToggle />}
       <NetworkButton />
       <WalletButton />
     </div>
