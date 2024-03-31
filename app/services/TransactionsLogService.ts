@@ -21,7 +21,7 @@ export class TransactionsLogService {
         "timestampEnd" | "stepStatus" | "errorMessage"
       > = {
         ...transactionDetails,
-        timestampStart: new Date(), 
+        timestampStart: new Date(),
       };
 
       return await this.transactionsLogRepository.startTransaction(
@@ -68,5 +68,9 @@ export class TransactionsLogService {
       console.error("Error updating transaction step:", error);
       throw error; // Re-throw the error to be handled or logged by the caller
     }
+  }
+
+  async getTransactions(page: number, limit: number) {
+    return this.transactionsLogRepository.getTransactions(page, limit);
   }
 }
