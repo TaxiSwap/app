@@ -8,7 +8,7 @@ module.exports = {
       },
     },
     {
-      name: "taxi-admin",
+      name: "taxi-testnet",
       script: "yarn start",
       env: {
         PORT: 3001,
