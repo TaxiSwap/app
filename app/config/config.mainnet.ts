@@ -2,9 +2,9 @@ import { NetworkConfig } from "./configLoader";
 
 export const mainnetConfig: NetworkConfig = {
   networks: {
-    "1": "Ethereum",
+    // "1": "Ethereum",
     "43114": "Avalanche",
-    "10": "OP Mainnet",
+    "10": "Optimism",
     "42161": "Arbitrum",
     "8453": "Base",
     "137": "Polygon",
