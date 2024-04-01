@@ -38,9 +38,9 @@ export const chainConfigs: ChainConfigMap = {
     },
     '43114': {
       providerUrl: process.env.PROVIDER_URL_AVALANCHE,
-      USDCContractAddress: "",
-      taxiSwapContractAddress: "",
-      messageTransmitterAddress: "",
+      USDCContractAddress: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
+      taxiSwapContractAddress: "0x2969ce734A854043f462199559718Ccf295bD417",
+      messageTransmitterAddress: "0x8186359af5f57fbb40c6b14a588d2a59c0c29880",
       attestationUrl: "https://iris-api.circle.com",
       transactionGasAmount: {
         receive: BigInt("150000"),
@@ -53,9 +53,9 @@ export const chainConfigs: ChainConfigMap = {
     },
     '10': {
       providerUrl: process.env.PROVIDER_URL_OP_MAINNET,
-      USDCContractAddress: "",
-      taxiSwapContractAddress: "",
-      messageTransmitterAddress: "",
+      USDCContractAddress: "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+      taxiSwapContractAddress: "0x03c0468fbac1c81f3204aafc4a88a6eb4e6ac86d",
+      messageTransmitterAddress: "0x4d41f22c5a0e5c74090899e5a8fb597a8842b3e8",
       attestationUrl: "https://iris-api.circle.com",
       transactionGasAmount: {
         receive: BigInt("150000"),
@@ -68,9 +68,9 @@ export const chainConfigs: ChainConfigMap = {
     },
     '42161': {
       providerUrl: process.env.PROVIDER_URL_ARBITRUM,
-      USDCContractAddress: "",
-      taxiSwapContractAddress: "",
-      messageTransmitterAddress: "",
+      USDCContractAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+      taxiSwapContractAddress: "0x03c0468fbac1c81f3204aafc4a88a6eb4e6ac86d",
+      messageTransmitterAddress: "0xC30362313FBBA5cf9163F0bb16a0e01f01A896ca",
       attestationUrl: "https://iris-api.circle.com",
       transactionGasAmount: {
         receive: BigInt("150000"),
@@ -83,9 +83,9 @@ export const chainConfigs: ChainConfigMap = {
     },
     '8453': {
       providerUrl: process.env.PROVIDER_URL_BASE,
-      USDCContractAddress: "",
-      taxiSwapContractAddress: "",
-      messageTransmitterAddress: "",
+      USDCContractAddress: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      taxiSwapContractAddress: "0x9f6a42deb5dfa33ff9ca36f4c23ab8ee813f0732",
+      messageTransmitterAddress: "0xAD09780d193884d503182aD4588450C416D6F9D4",
       attestationUrl: "https://iris-api.circle.com",
       transactionGasAmount: {
         receive: BigInt("150000"),
@@ -98,9 +98,9 @@ export const chainConfigs: ChainConfigMap = {
     },
     '137': {
       providerUrl: process.env.PROVIDER_URL_POLYGON,
-      USDCContractAddress: "",
-      taxiSwapContractAddress: "",
-      messageTransmitterAddress: "",
+      USDCContractAddress: "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+      taxiSwapContractAddress: "0x9f6a42deb5dfa33ff9ca36f4c23ab8ee813f0732",
+      messageTransmitterAddress: "0xF3be9355363857F3e001be68856A2f96b4C39Ba9",
       attestationUrl: "https://iris-api.circle.com",
       transactionGasAmount: {
         receive: BigInt("150000"),
