@@ -27,7 +27,7 @@ export class TransactionsLogRepository {
   }
 
   async updateTransactionStep(
-    transactionId: string,
+    logId: string,
     step: number,
     stepStatus: string,
     options: {
@@ -42,7 +42,7 @@ export class TransactionsLogRepository {
     const collection = db.collection<ITransactionsLog>("transactions");
 
     // Retrieve the transaction to check its timestampStart
-    const transaction = await collection.findOne({ logId: transactionId });
+    const transaction = await collection.findOne({ logId });
     if (!transaction) {
       throw new Error("Transaction not found");
     }
@@ -62,7 +62,7 @@ export class TransactionsLogRepository {
     };
 
     return await collection.updateOne(
-      { logId: transactionId },
+      { logId },
       { $set: updateFields }
     );
   }
