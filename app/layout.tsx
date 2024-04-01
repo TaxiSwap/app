@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "TaxiSwap",
     description: "Effortless Multi-Chain Bridging",
-    images: ["https:/app.taxiswap.xyz/taxiswap-1200x627.png"],
+    images: ["https:/app.taxiswap.xyz/taxiswap-1200x600.png"],
   },
 };
 
