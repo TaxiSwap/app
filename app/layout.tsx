@@ -21,6 +21,13 @@ export const metadata: Metadata = {
     "Polygon",
     "Avalanche",
   ],
+  metadataBase: new URL('https://app.taxiswap.xyz'),
+  alternates: {
+    canonical: '/',
+    languages: {
+      'en-US': '/en-US',
+    },
+  },
   openGraph: {
     title: "TaxiSwap",
     description: "Effortless Multi-Chain Bridging",
