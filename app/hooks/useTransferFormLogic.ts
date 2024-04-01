@@ -355,7 +355,7 @@ export const useTransferFormLogic = () => {
             logId,
             step: currentStep,
             stepStatus: "error",
-            options: { errorMessage },
+            options: JSON.stringify({ errorMessage }),
           }),
         });
         console.log("Error response : ", errorResponse)
