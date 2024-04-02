@@ -54,7 +54,7 @@ export const chainConfigs: ChainConfigMap = {
     '10': {
       providerUrl: process.env.PROVIDER_URL_OP_MAINNET,
       USDCContractAddress: "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
-      taxiSwapContractAddress: "0x03c0468fbac1c81f3204aafc4a88a6eb4e6ac86d",
+      taxiSwapContractAddress: "0x13203871352962769db169c46336a9A08413B40B",
       messageTransmitterAddress: "0x4d41f22c5a0e5c74090899e5a8fb597a8842b3e8",
       attestationUrl: "https://iris-api.circle.com",
       transactionGasAmount: {
