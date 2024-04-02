@@ -271,7 +271,7 @@ export const useTransferFormLogic = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          transactionId: logId,
+          logId,
           step: currentStep,
           stepStatus: "completed",
           options: { approvalTx },
@@ -355,7 +355,7 @@ export const useTransferFormLogic = () => {
             logId,
             step: currentStep,
             stepStatus: "error",
-            options: JSON.stringify({ errorMessage }),
+            options: { errorMessage },
           }),
         });
         console.log("Error response : ", errorResponse)
