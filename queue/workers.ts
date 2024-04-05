@@ -1,6 +1,8 @@
 import { Worker, Queue } from "bullmq";
 import Redis from "ioredis";
 import { ethers } from "ethers";
+import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' });
 
 import {
   getMessageHashFromTransaction,
