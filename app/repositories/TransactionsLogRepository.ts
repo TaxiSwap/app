@@ -47,14 +47,6 @@ export class TransactionsLogRepository {
       throw new Error("Transaction not found");
     }
 
-    // Check if the transaction is more than 15 minutes old
-    const timeDiff = Math.abs(
-      new Date().getTime() - transaction.timestampStart.getTime()
-    );
-    if (timeDiff > 15 * 60 * 1000) {
-      // 15 minutes in milliseconds
-      throw new Error("Cannot update transaction: Update window has expired");
-    }
     const updateFields: Partial<ITransactionsLog> = {
       step,
       stepStatus,
