@@ -12,8 +12,13 @@ module.exports = {
       script: "yarn start",
       env: {
         PORT: 3001,
-        TESTNET: 'true'
+        TESTNET: "true",
       },
+    },
+    {
+      name: "worker",
+      script: "npx",
+      args: "tsx queue/workers.ts",
     },
   ],
 };
