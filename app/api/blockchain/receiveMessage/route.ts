@@ -6,6 +6,7 @@ import {
 } from "../../../blockchain/utils";
 import { chainConfigs } from "../../../config/ChainConfigMap";
 import messageTransmitterAbi from "../../../blockchain/contracts/MessageTransmitter.abi.json";
+import { simpleQueue } from "@/queue";
 
 export async function POST(request: Request) {
   const { depositTx, sourceChain, destinationChain } = await request.json();
@@ -20,61 +21,28 @@ export async function POST(request: Request) {
   }
 
   try {
-    const providerSource = new ethers.JsonRpcProvider(
-      chainConfigs[sourceChain]?.providerUrl
+    // Create a jobId using depositTx and sourceChain
+    const jobId = `${depositTx}_${sourceChain}`;
+
+    // Add job to the blockchain message reception queue with the custom jobId
+    await simpleQueue.add(
+      "simpleMessageReceptionQueue",
+      {
+        depositTx,
+        sourceChain,
+        destinationChain,
+      },
+      { jobId }
     );
-    const transactionReceipt = await providerSource.getTransactionReceipt(
-      depositTx
+
+    // Return the jobId in the response for later monitoring
+    return new Response(
+      JSON.stringify({ status: "Job added to the queue", jobId }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
     );
-    // Check if tx comes from own contracts
-    if (
-      transactionReceipt?.to?.toLowerCase() !=
-      chainConfigs[sourceChain]?.taxiSwapContractAddress.toLowerCase()
-    ) {
-      throw new Error("Transaction not from TaxiSwap contract");
-    }
-    // Get message
-    const { messageHash, messageBytes } = await getMessageHashFromTransaction(
-      depositTx,
-      providerSource as ethers.Provider
-    );
-    // Get attestation
-    const attestationResponse = await pollAttestationStatus(
-      chainConfigs[sourceChain]?.attestationUrl as string,
-      messageHash
-    );
-    // Destination Provider
-    const providerDestination = new ethers.JsonRpcProvider(
-      chainConfigs[destinationChain]?.providerUrl
-    );
-    // Operator Signer
-    const signer = new ethers.Wallet(
-      process.env.OPERATOR_PRIVATE_KEY as string,
-      providerDestination
-    );
-    // define message transmitter contract
-    const messageTransmitterContract = new ethers.Contract(
-      chainConfigs[destinationChain]?.messageTransmitterAddress as string,
-      messageTransmitterAbi,
-      signer
-    );
-    // Test receive
-    const testReceiveTx =
-      await messageTransmitterContract.receiveMessage.staticCall(
-        messageBytes,
-        attestationResponse.attestation
-      );
-    // actual receive
-    const receiveTx = await messageTransmitterContract.receiveMessage(
-      messageBytes,
-      attestationResponse.attestation
-    );
-    await receiveTx.wait();
-    console.log("receiptTx: ", receiveTx.hash);
-    return new Response(JSON.stringify({ hash: receiveTx.hash }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
   } catch (error: any) {
     return new Response(
       JSON.stringify({
