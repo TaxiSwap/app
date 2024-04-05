@@ -227,6 +227,36 @@ export const useTransferFormLogic = () => {
     setIsModalOpen(true);
   };
 
+  const pollJobStatus = (jobId: string) => {
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(async () => {
+        try {
+          const response = await fetch(`/api/blockchain/jobStatus/${jobId}`);
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Failed to fetch job status");
+          }
+
+          // Check if the jobStatus response includes a hash, indicating completion
+          if (data.hash) {
+            console.log("Job completed", data.hash);
+            clearInterval(interval);
+            resolve(data.hash);
+          } else if (data.status === "failed") {
+            clearInterval(interval);
+            reject(new Error("Job failed"));
+          }
+          // If the job is not yet completed or failed, the polling will continue
+        } catch (error) {
+          console.error("Error polling job status:", error);
+          clearInterval(interval);
+          reject(error);
+        }
+      }, 20000); // Poll every 20000 milliseconds (20 seconds)
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     openModalWithResetState();
@@ -251,7 +281,7 @@ export const useTransferFormLogic = () => {
           destinationChain,
           usdcAddress,
           amount: amount.toString(),
-          taxiswapContract: chainConfigs[sourceChain]?.taxiSwapContractAddress
+          taxiswapContract: chainConfigs[sourceChain]?.taxiSwapContractAddress,
         }),
       });
       const startData = await startResponse.json();
@@ -318,8 +348,11 @@ export const useTransferFormLogic = () => {
           cache: "no-store",
         });
         const data = await response.json();
+        const jobId = data.jobId;
+        const hash = await pollJobStatus(jobId);
+        console.log("Job completed with hash:", hash);
 
-        if (response.ok) {
+        if (hash) {
           // showMessage("Message receive succeeded: " + data.hash, "success");
 
           await fetch("/api/log/transactions/update", {
@@ -329,13 +362,13 @@ export const useTransferFormLogic = () => {
               logId,
               step: currentStep,
               stepStatus: "completed",
-              options: { responseData: JSON.stringify(data) }, // what to place here
+              options: { responseData: JSON.stringify(data.hash) },
             }),
           });
           setIsTransferCompleted(true);
           setModalCanClose(true);
         } else {
-          throw new Error(data.error || "Unknown Error");
+          throw new Error(data.message || "Unknown Error");
         }
         updateStepStatus(currentStep, "completed");
       } catch (error: unknown) {
@@ -347,8 +380,8 @@ export const useTransferFormLogic = () => {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occurred";
       if (logId != "") {
-        console.log("Error inside check: ", errorMessage)
-      const errorResponse =  await fetch("/api/log/transactions/update", {
+        console.log("Error: ", errorMessage);
+        const errorResponse = await fetch("/api/log/transactions/update", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -358,7 +391,7 @@ export const useTransferFormLogic = () => {
             options: { errorMessage },
           }),
         });
-        console.log("Error response : ", errorResponse)
+        console.log("Error response : ", errorResponse);
       }
       setModalError(errorMessage);
       setModalCanClose(true);
