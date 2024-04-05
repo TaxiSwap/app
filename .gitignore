@@ -38,3 +38,6 @@ next-env.d.ts
 
 # mongo data
 /database
+
+# redis data
+/redis-data
