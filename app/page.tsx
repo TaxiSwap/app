@@ -5,7 +5,7 @@ import { MessageProvider } from "./contexts/MessageContext";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-800">
+    <div className="min-h-screen text-gray-800">
       <MessageProvider>
               <Header />
               <TransferForm />
