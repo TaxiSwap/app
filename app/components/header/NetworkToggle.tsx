@@ -11,7 +11,7 @@ const NetworkToggle = () => {
       {/* Static Label for Mainnet */}
       <span
         className={`font-medium ${
-          !isTestnet ? "text-blue-600" : "text-gray-400"
+          !isTestnet ? "text-blackish" : "text-gray-400"
         }`}
       >
         Mainnet
@@ -29,11 +29,11 @@ const NetworkToggle = () => {
           />
           <div
             className={`block w-10 h-6 rounded-full transition-colors duration-300 ${
-              isTestnet ? "bg-gray-600" : "bg-blue-600"
+              isTestnet ? "bg-gray-600" : "bg-blackish"
             }`}
           ></div>
           <div
-            className={`dot absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ${
+            className={`dot absolute left-1 top-1 bg-header-yellow w-4 h-4 rounded-full transition-transform duration-300 ${
               isTestnet ? "transform translate-x-4" : ""
             }`}
           ></div>
@@ -43,7 +43,7 @@ const NetworkToggle = () => {
       {/* Static Label for Testnet */}
       <span
         className={`font-medium ${
-          isTestnet ? "text-blue-600" : "text-gray-400"
+          isTestnet ? "text-blackish" : "text-gray-400"
         }`}
       >
         Testnet
