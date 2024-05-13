@@ -8,6 +8,15 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontSize: {
+        '64': '64px',
+      },
+      lineHeight: {
+        '80': '80px',
+      },
+      fontWeight: {
+        heavy: '900',
+      },
       colors: {
         "header-yellow": "#FBD922",
         blackish: "#312411",

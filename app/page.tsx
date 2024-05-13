@@ -1,3 +1,4 @@
+import DualPanel from "./components/DualPanel";
 import Footer from "./components/footer/Footer";
 import Header from "./components/header/Header";
 import TransferForm from "./components/transferForm/TransferForm";
@@ -8,7 +9,8 @@ export default function Home() {
     <div className="min-h-screen text-gray-800">
       <MessageProvider>
               <Header />
-              <TransferForm />
+              {/* <TransferForm /> */}
+              <DualPanel />
               <Footer />
       </MessageProvider>
     </div>
