@@ -6,3 +6,9 @@
 body {
     background: transparent radial-gradient(closest-side at 50% 50%, #C28206 0%, #FBD922 100%) 0% 0% no-repeat padding-box;
 }
+
+select option {
+    background-color: #FFE897; /* Matching the bg-pale class */
+    color: #312411; /* Matching the text-blackish class */
+    font-weight: bold;
+  }

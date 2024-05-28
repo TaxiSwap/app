@@ -20,6 +20,8 @@ const config: Config = {
       colors: {
         "header-yellow": "#FBD922",
         blackish: "#312411",
+        pale: "#FFE897",
+        brownish: "#826754"
       },
       fontFamily: {
         sans: [
@@ -33,6 +35,16 @@ const config: Config = {
           "Arial",
           "sans-serif",
         ],
+      },
+      boxShadow: {
+        custom: '0px 8px 40px #4232347D', // Custom shadow
+      },
+      borderRadius: {
+        '36': '36px',
+        '20': '20px',
+      },
+      minHeight: {
+        'screen-80': '80vh', // 90% of the viewport height
       },
     },
   },
