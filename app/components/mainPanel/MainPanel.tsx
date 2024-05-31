@@ -1,19 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import FromSelector from "./FromSelectorPanel";
 import { useTransferFormStore } from "@/app/store/useTransferFormStore";
 import { useNetworkStore } from "@/app/store/useNetworkConfig";
 import { useTransferFormLogic } from "@/app/hooks/useTransferFormLogic";
-// import ToSelector from './ToSelector';
-// import AmountInput from './AmountInput';
-// import AddressInput from './AddressInput';
-// import CostEstimation from './CostEstimation';
-// import ConnectWalletButton from './ConnectWalletButton';
+import { MdArrowDownward } from "react-icons/md";
+import ToSelectorPanel from "./ToSelectorPanel";
 
 const MainPanel: React.FC = () => {
-  const [address, setAddress] = useState<string>("");
-  const [gasCost, setGasCost] = useState<number>(0.69);
-  const [taxiFee, setTaxiFee] = useState<number>(0.12);
   const { config } = useNetworkStore();
   const {
     sourceChain,
@@ -45,12 +39,10 @@ const MainPanel: React.FC = () => {
     handleNetworkSwitch,
     handleSubmit,
   } = useTransferFormLogic();
-  
-  const finalReceivedAmount = amount - gasCost - taxiFee;
 
   return (
     <div className="flex justify-center items-center min-h-screen-80">
-      <div className="bg-blackish p-8 shadow-custom rounded-36 text-white max-w-lg min-w-screen w-full">
+      <div className="bg-blackish p-8 shadow-custom rounded-36 text-white max-w-lg min-w-screen w-full relative">
         <FromSelector
           value={sourceChain}
           onChange={(e) => handleSourceChange(e)}
@@ -61,11 +53,24 @@ const MainPanel: React.FC = () => {
           onErrorClick={handleNetworkSwitch}
           userBalance={userBalance}
         />
-        {/* <AmountInput amount={amount} setAmount={setAmount} />
-        <ToSelector />
-        <AddressInput address={address} setAddress={setAddress} />
-        <CostEstimation gasCost={gasCost} taxiFee={taxiFee} finalReceivedAmount={finalReceivedAmount} />
-        <ConnectWalletButton /> */}
+        <div className="relative flex justify-center my-2">
+          <button className="bg-yellow-400 text-blackish rounded-full p-3 shadow-md border-4 border-blackish border-8 absolute top-1/2 transform -translate-y-1/2 z-10">
+            <MdArrowDownward className="w-6 h-6" />
+          </button>
+        </div>
+        <ToSelectorPanel
+          value={destinationChain}
+          destinationAddress={destinationAddress}
+          onChange={(e) => handleDestinationChange(e)}
+          networks={config.network_params}
+          errorMessage={
+            !isDestinationChainValid ? "Invalid Destination Chain" : undefined
+          }
+          onErrorClick={() => {}}
+          handleCopyAddress={handleCopyAddress}
+          onAddressChange={handleDestinationAddressChange}
+          isValid={isDestinationAddressValid}
+        />
       </div>
     </div>
   );
