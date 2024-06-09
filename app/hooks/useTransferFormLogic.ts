@@ -261,8 +261,7 @@ export const useTransferFormLogic = () => {
     });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     openModalWithResetState();
     let currentStep = 0; // To track the current step
     let logId = "";
