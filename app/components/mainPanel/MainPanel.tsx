@@ -6,6 +6,7 @@ import { useNetworkStore } from "@/app/store/useNetworkConfig";
 import { useTransferFormLogic } from "@/app/hooks/useTransferFormLogic";
 import { MdArrowDownward } from "react-icons/md";
 import ToSelectorPanel from "./ToSelectorPanel";
+import TransactionSummary from "./TransactionSummary";
 
 const MainPanel: React.FC = () => {
   const { config } = useNetworkStore();
@@ -36,6 +37,7 @@ const MainPanel: React.FC = () => {
     handleCopyAddress,
     handleAmountChange,
     handleAddMax,
+    handleAddHalf,
     handleNetworkSwitch,
     handleSubmit,
   } = useTransferFormLogic();
@@ -52,6 +54,10 @@ const MainPanel: React.FC = () => {
           }
           onErrorClick={handleNetworkSwitch}
           userBalance={userBalance}
+          onMaxClick={handleAddMax}
+          onHalfClick={handleAddHalf}
+          amount={amount}
+          handleAmountChange={handleAmountChange}
         />
         <div className="relative flex justify-center my-2">
           <button className="bg-yellow-400 text-blackish rounded-full p-3 shadow-md border-4 border-blackish border-8 absolute top-1/2 transform -translate-y-1/2 z-10">
@@ -70,6 +76,14 @@ const MainPanel: React.FC = () => {
           handleCopyAddress={handleCopyAddress}
           onAddressChange={handleDestinationAddressChange}
           isValid={isDestinationAddressValid}
+        />
+        <TransactionSummary
+          gasCost={isSourceNetworkAsWallet ? estimatedUserGasCostInEther : null}
+          gasUnit={userGasSymbol}
+          tipAmount={tipAmount}
+          tipUnit={"USDC"}
+          finalAmount={tipAmount && isAmountValid ? amount - tipAmount : null}
+          finalAmountUnit={"USDC"}
         />
       </div>
     </div>
