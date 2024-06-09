@@ -211,6 +211,10 @@ export const useTransferFormLogic = () => {
     setAmount(userBalance || 0);
   };
 
+  const handleAddHalf = () => {
+    setAmount(userBalance? userBalance/2 : 0);
+  };
+
   const handleNetworkSwitch = async () => {
     try {
       await switchNetwork(sourceChain);
@@ -416,6 +420,7 @@ export const useTransferFormLogic = () => {
     handleCopyAddress,
     handleAmountChange,
     handleAddMax,
+    handleAddHalf,
     handleNetworkSwitch,
     handleSubmit,
   };
