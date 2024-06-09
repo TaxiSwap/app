@@ -10,6 +10,10 @@ interface SelectChainProps {
   errorMessage?: string;
   onErrorClick?: () => void;
   userBalance?: number | null;
+  amount: number | null;
+  handleAmountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onMaxClick?: () => void; 
+  onHalfClick?: () => void; 
 }
 
 const FromSelectorPanel: React.FC<SelectChainProps> = ({
@@ -18,7 +22,12 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
   networks,
   errorMessage,
   onErrorClick,
-  userBalance
+  userBalance,
+  amount,
+  handleAmountChange,
+  onMaxClick,
+  onHalfClick
+  
 }) => {
   const [inputValue, setInputValue] = useState<string>("");
   const [selectedToken, setSelectedToken] = useState<string>("");
@@ -29,22 +38,6 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
     }
   }, [value, networks]);
 
-  const handleHalfClick = () => {
-    if (userBalance) {
-      setInputValue((userBalance / 2).toString());
-    }
-  };
-
-  const handleMaxClick = () => {
-    if (userBalance) {
-      setInputValue(userBalance.toString());
-    }
-  };
-
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(event.target.value);
-  };
-
   const handleTokenChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedToken(event.target.value);
   };
@@ -52,7 +45,7 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
   const isOverBalance = userBalance !== null && userBalance !== undefined && parseFloat(inputValue) > userBalance;
 
   return (
-    <div className="bg-pale p-4 rounded-20 shadow-custom">
+    <div className="bg-pale p-4">
       <div className="mb-4 relative">
         <div className="flex items-center pt-6">
           <label className="text-sm text-blackish font-bold mr-2">FROM:</label>
@@ -80,8 +73,8 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
       <div className="flex items-center p-2 rounded-lg shadow mb-4">
         <input
           type="number"
-          value={inputValue}
-          onChange={handleInputChange}
+          value={amount || undefined}
+          onChange={handleAmountChange}
           className={`w-full p-2 rounded-lg font-bold text-xl bg-pale ${
             isOverBalance ? 'border-red-500 text-red-500' : 'text-blackish'
           }`}
@@ -89,13 +82,13 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
         <div className="flex space-x-2 mx-2 text-xs text-brownish">
           <button
             className="px-2 py-1 border-2 border-brownish rounded-lg"
-            onClick={handleHalfClick}
+            onClick={onHalfClick}
           >
             Half
           </button>
           <button
             className="px-2 py-1 border-2 border-brownish rounded-lg"
-            onClick={handleMaxClick}
+            onClick={onMaxClick}
           >
             MAX
           </button>
