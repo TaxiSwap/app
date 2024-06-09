@@ -4,12 +4,12 @@ import FromSelector from "./FromSelectorPanel";
 import { useTransferFormStore } from "@/app/store/useTransferFormStore";
 import { useNetworkStore } from "@/app/store/useNetworkConfig";
 import { useTransferFormLogic } from "@/app/hooks/useTransferFormLogic";
-import { MdArrowDownward } from "react-icons/md";
 import ToSelectorPanel from "./ToSelectorPanel";
 import TransactionSummary from "./TransactionSummary";
 import TransferButton from "./TransferButton";
 import { TransferModal } from "../transferForm/TransferModal";
 import { useTransferModalStore } from "@/app/store/useTransferModalStore";
+import SwapChainsButton from "./SwapChainsButton";
 
 const MainPanel: React.FC = () => {
   const { config } = useNetworkStore();
@@ -79,11 +79,7 @@ const MainPanel: React.FC = () => {
           amount={amount}
           handleAmountChange={handleAmountChange}
         />
-        <div className="relative flex justify-center my-2">
-          <button className="bg-yellow-400 text-blackish rounded-full p-3 shadow-md border-4 border-blackish border-8 absolute top-1/2 transform -translate-y-1/2 z-10">
-            <MdArrowDownward className="w-6 h-6" />
-          </button>
-        </div>
+        <SwapChainsButton handleSwapChains={handleSwapChains} />
         <ToSelectorPanel
           value={destinationChain}
           destinationAddress={destinationAddress}
