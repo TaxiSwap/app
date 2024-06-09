@@ -7,6 +7,9 @@ import { useTransferFormLogic } from "@/app/hooks/useTransferFormLogic";
 import { MdArrowDownward } from "react-icons/md";
 import ToSelectorPanel from "./ToSelectorPanel";
 import TransactionSummary from "./TransactionSummary";
+import TransferButton from "./TransferButton";
+import { TransferModal } from "../transferForm/TransferModal";
+import { useTransferModalStore } from "@/app/store/useTransferModalStore";
 
 const MainPanel: React.FC = () => {
   const { config } = useNetworkStore();
@@ -41,9 +44,26 @@ const MainPanel: React.FC = () => {
     handleNetworkSwitch,
     handleSubmit,
   } = useTransferFormLogic();
+  const {
+    steps,
+    isModalOpen,
+    modalError,
+    modalCanClose,
+    setIsModalOpen,
+    isTransferCompleted,
+  } = useTransferModalStore();
 
   return (
     <div className="flex justify-center items-center min-h-screen-80">
+      <TransferModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Transfer Progress"
+        steps={steps}
+        errorMessage={modalError}
+        canClose={modalCanClose}
+        transferCompleted={isTransferCompleted}
+      />
       <div className="bg-blackish p-8 shadow-custom rounded-36 text-white max-w-lg min-w-screen w-full relative">
         <FromSelector
           value={sourceChain}
@@ -85,6 +105,7 @@ const MainPanel: React.FC = () => {
           finalAmount={tipAmount && isAmountValid ? amount - tipAmount : null}
           finalAmountUnit={"USDC"}
         />
+        <TransferButton onClick={handleSubmit} disabled={!isTransferValid} />
       </div>
     </div>
   );
