@@ -26,8 +26,8 @@ const NetworkButton = () => {
     <div className="relative inline-block text-left">
       <button
         onClick={() => account && setDropdownOpen(!dropdownOpen)}
-        className={`px-4 py-2 rounded-full text-sm font-medium shadow-md border transition-colors duration-300 ${
-          !isSupportedNetwork ? 'bg-red-500 hover:bg-red-700 text-white' : 'bg-blue-600 hover:bg-blue-700 text-white border-blue-800'
+        className={`px-4 py-2 rounded-md text-sm font-medium shadow-md border transition-colors duration-300 ${
+          !isSupportedNetwork ? 'bg-red-500 hover:bg-red-700 text-white' : 'bg-blackish hover:bg-gray-700 text-header-yellow'
         }`}
         disabled={!account}
       >
