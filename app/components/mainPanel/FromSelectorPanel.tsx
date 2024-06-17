@@ -45,7 +45,7 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
   const isOverBalance = userBalance !== null && userBalance !== undefined && parseFloat(inputValue) > userBalance;
 
   return (
-    <div className="bg-pale p-4">
+    <div className="bg-pale p-4 rounded-20 shadow-custom">
       <div className="mb-4 relative">
         <div className="flex items-center pt-6">
           <label className="text-sm text-blackish font-bold mr-2">FROM:</label>
@@ -70,12 +70,12 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
           </div>
         )}
       </div>
-      <div className="flex items-center p-2 rounded-lg shadow mb-4">
+      <div className="flex items-center p-1 rounded-lg shadow mb-4 border border-solid border-brownish">
         <input
           type="number"
           value={amount || undefined}
           onChange={handleAmountChange}
-          className={`w-full p-2 rounded-lg font-bold text-xl bg-pale ${
+          className={`w-full p-2 rounded-lg font-bold text-xl bg-pale  ${
             isOverBalance ? 'border-red-500 text-red-500' : 'text-blackish'
           }`}
         />
@@ -93,7 +93,7 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
             MAX
           </button>
         </div>
-        <div className="flex items-center space-x-2 z-10">
+        <div className="flex items-center space-x-2 z-10 border-l border-solid border-brownish">
         <TokenDropdown value={selectedToken} onChange={handleTokenChange} tokens={networks[value]?.tokens || []} />
         </div>
       </div>
