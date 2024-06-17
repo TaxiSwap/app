@@ -12,3 +12,14 @@ select option {
     color: #312411; /* Matching the text-blackish class */
     font-weight: bold;
   }
+
+  /* Hide arrows in input[type="number"] */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
