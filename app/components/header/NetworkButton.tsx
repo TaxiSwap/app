@@ -26,13 +26,15 @@ const NetworkButton = () => {
     <div className="relative inline-block text-left">
       <button
         onClick={() => account && setDropdownOpen(!dropdownOpen)}
-        className={`px-4 py-2 rounded-md text-sm font-medium shadow-md transition-colors duration-300 
+        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300 
           ${
-            account ? 'border' : ''
+            account ? 'border shadow-md' : ''
           }
           ${
-          !isSupportedNetwork ? 'bg-red-500 hover:bg-red-700 text-white' : 'bg-blackish hover:bg-gray-700 text-header-yellow'
-        }`}
+            account 
+              ? (!isSupportedNetwork ? 'bg-red-500 hover:bg-red-700 text-white' : 'bg-blackish hover:bg-gray-700 text-header-yellow')
+              : 'bg-blackish text-header-yellow'
+          }`}
         disabled={!account}
       >
         {account ? (isSupportedNetwork ? networkName : "Wrong Network") : 'No Wallet Connected'}
