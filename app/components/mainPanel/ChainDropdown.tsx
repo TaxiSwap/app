@@ -37,7 +37,7 @@ const ChainDropdown: React.FC<ChainDropdownProps> = ({ value, onChange, networkP
     return (
       <div className="relative inline-block w-64" ref={dropdownRef}>
         <div
-          className="flex items-center bg-transparent p-2 rounded-lg cursor-pointer w-fit"
+          className="flex items-center bg-transparent p-2 rounded-lg cursor-pointer w-fit  border border-solid border-brownish"
           onClick={() => setIsOpen(!isOpen)}
         >
           {value ? (

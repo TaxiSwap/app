@@ -75,7 +75,7 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
           type="number"
           value={amount || undefined}
           onChange={handleAmountChange}
-          className={`w-full p-2 rounded-lg font-bold text-xl bg-pale ${
+          className={`w-full p-2 rounded-lg font-bold text-xl bg-pale  ${
             isOverBalance ? 'border-red-500 text-red-500' : 'text-blackish'
           }`}
         />
