@@ -86,7 +86,7 @@ const MainPanel: React.FC = () => {
           onChange={(e) => handleDestinationChange(e)}
           networks={config.network_params}
           errorMessage={
-            !isDestinationChainValid ? "Invalid Destination Chain" : undefined
+            !isDestinationChainValid ? "Destination cannot be same as source" : undefined
           }
           onErrorClick={() => {}}
           handleCopyAddress={handleCopyAddress}
