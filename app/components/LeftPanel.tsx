@@ -12,13 +12,13 @@ const LeftPanel: React.FC = () => {
         height={0}
         sizes="100vw"
         style={{ width: "75%", height: "auto" }}
-        className="pt-8 pl-8"
+        className="pt-16 pl-8"
       />
 
       {/* Text above the overlay image */}
       <div className="absolute top-0 left-0 p-4">
         <p className="text-blackish font-heavy text-64 leading-80">
-          Your one stop
+          Your 1 stop
         </p>
 
         {/* Overlay Image */}
@@ -27,10 +27,10 @@ const LeftPanel: React.FC = () => {
             src="/usdc bridge.png"
             width={0}
             height={0}
-            sizes="100vw"
+            sizes="160vw"
             style={{ width: "100%", height: "auto" }}
             alt="USD Coin Bridge"
-            className="w-20 h-20 mt-20" 
+            className="w-80 h-80 mt-20" 
           />
         </div>
       </div>
