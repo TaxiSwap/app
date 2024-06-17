@@ -70,7 +70,7 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
           </div>
         )}
       </div>
-      <div className="flex items-center p-2 rounded-lg shadow mb-4">
+      <div className="flex items-center p-1 rounded-lg shadow mb-4 border border-solid border-brownish">
         <input
           type="number"
           value={amount || undefined}
@@ -93,7 +93,7 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
             MAX
           </button>
         </div>
-        <div className="flex items-center space-x-2 z-10">
+        <div className="flex items-center space-x-2 z-10 border-l border-solid border-brownish">
         <TokenDropdown value={selectedToken} onChange={handleTokenChange} tokens={networks[value]?.tokens || []} />
         </div>
       </div>
