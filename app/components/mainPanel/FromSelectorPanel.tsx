@@ -45,7 +45,7 @@ const FromSelectorPanel: React.FC<SelectChainProps> = ({
   const isOverBalance = userBalance !== null && userBalance !== undefined && parseFloat(inputValue) > userBalance;
 
   return (
-    <div className="bg-pale p-4">
+    <div className="bg-pale p-4 rounded-20 shadow-custom">
       <div className="mb-4 relative">
         <div className="flex items-center pt-6">
           <label className="text-sm text-blackish font-bold mr-2">FROM:</label>
