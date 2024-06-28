@@ -14,10 +14,7 @@ jobs:
         env:
           MONGO_INITDB_ROOT_USERNAME: temp_user
           MONGO_INITDB_ROOT_PASSWORD: temp_password
-        options: >-
-          --mount type=bind,source=${{ github.workspace }}/database/db,target=/data/db
-          --mount type=bind,source=${{ github.workspace }}/database/dev.archive,target=/Databases/dev.archive
-          --mount type=bind,source=${{ github.workspace }}/database/production,target=/Databases/production
+
       redis:
         image: redis
         ports:
@@ -32,12 +29,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '20'
-
-    - name: Create database directories
-      run: |
-        mkdir -p database/db
-        mkdir -p database/dev.archive
-        mkdir -p database/production
 
     - name: Install dependencies
       run: yarn install
