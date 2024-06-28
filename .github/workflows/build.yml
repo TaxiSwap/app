@@ -1,29 +1,41 @@
-name: Build and Test
+name: Build
 
-on:
-  push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - '*'
+on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
 
-      - name: Install dependencies
-        run: yarn install
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.11.0
+      with:
+        mongodb-version: '8.0'
+        mongodb-root-username: test_user
+        mongodb-root-password: test_password
 
-      - name: Build project
-        run: yarn build
+    - name: Set up .env file
+      run: |
+        echo "MONGO_INITDB_ROOT_USERNAME=test_user" >> .env
+        echo "MONGO_INITDB_ROOT_PASSWORD=test_password" >> .env
+        echo "ME_CONFIG_BASICAUTH_USERNAME=test_user" >> .env
+        echo "ME_CONFIG_BASICAUTH_PASSWORD=test_password" >> .env
 
+    - name: Install dependencies
+      run: yarn install
+
+    - name: Build project
+      run: yarn build
+      env:
+        MONGO_INITDB_ROOT_USERNAME: test_user
+        MONGO_INITDB_ROOT_PASSWORD: test_password
+        ME_CONFIG_BASICAUTH_USERNAME: test_user
+        ME_CONFIG_BASICAUTH_PASSWORD: test_password
