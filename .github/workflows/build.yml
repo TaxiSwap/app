@@ -19,8 +19,8 @@ jobs:
       uses: supercharge/mongodb-github-action@1.11.0
       with:
         mongodb-version: '8.0'
-        mongodb-root-username: test_user
-        mongodb-root-password: test_password
+        mongodb-username: test_user
+        mongodb-password: test_password
 
     - name: Set up .env file
       run: |
