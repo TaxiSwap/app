@@ -6,6 +6,39 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand('ping')'" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
+        env:
+          MONGO_INITDB_ROOT_USERNAME: test_user
+          MONGO_INITDB_ROOT_PASSWORD: test_password
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
+        env:
+          REDIS_PASSWORD: test_password
+        ports:
+          - 6379:6379
+
+    env:
+      MONGO_INITDB_ROOT_USERNAME: test_user
+      MONGO_INITDB_ROOT_PASSWORD: test_password
+      ME_CONFIG_BASICAUTH_USERNAME: test_user
+      ME_CONFIG_BASICAUTH_PASSWORD: test_password
+      MONGODB_URI: mongodb://test_user:test_password@localhost:27017/testdb?authSource=admin
+      REDIS_PASSWORD: test_password
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -15,27 +48,29 @@ jobs:
       with:
         node-version: '20.x'
 
-    - name: Start MongoDB
-      uses: supercharge/mongodb-github-action@1.11.0
-      with:
-        mongodb-version: '8.0-rc'
-        mongodb-username: test_user
-        mongodb-password: test_password
-
     - name: Set up .env file
       run: |
-        echo "MONGO_INITDB_ROOT_USERNAME=test_user" >> .env
-        echo "MONGO_INITDB_ROOT_PASSWORD=test_password" >> .env
-        echo "ME_CONFIG_BASICAUTH_USERNAME=test_user" >> .env
-        echo "ME_CONFIG_BASICAUTH_PASSWORD=test_password" >> .env
+        echo "MONGO_INITDB_ROOT_USERNAME=${{ env.MONGO_INITDB_ROOT_USERNAME }}" >> .env
+        echo "MONGO_INITDB_ROOT_PASSWORD=${{ env.MONGO_INITDB_ROOT_PASSWORD }}" >> .env
+        echo "ME_CONFIG_BASICAUTH_USERNAME=${{ env.ME_CONFIG_BASICAUTH_USERNAME }}" >> .env
+        echo "ME_CONFIG_BASICAUTH_PASSWORD=${{ env.ME_CONFIG_BASICAUTH_PASSWORD }}" >> .env
+        echo "MONGODB_URI=${{ env.MONGODB_URI }}" >> .env
+        echo "REDIS_PASSWORD=${{ env.REDIS_PASSWORD }}" >> .env
+
+    - name: Wait for MongoDB to be ready
+      run: dockerize -wait tcp://localhost:27017 -timeout 1m
+
+    - name: Wait for Redis to be ready
+      run: dockerize -wait tcp://localhost:6379 -timeout 1m
 
     - name: Install dependencies
       run: yarn install
 
+    - name: Initialize database
+      run: yarn db:init
+
+    - name: Start worker
+      run: yarn worker:start
+
     - name: Build project
       run: yarn build
-      env:
-        MONGO_INITDB_ROOT_USERNAME: test_user
-        MONGO_INITDB_ROOT_PASSWORD: test_password
-        ME_CONFIG_BASICAUTH_USERNAME: test_user
-        ME_CONFIG_BASICAUTH_PASSWORD: test_password
