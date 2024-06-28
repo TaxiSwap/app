@@ -13,10 +13,7 @@ First run the database:
 ```bash
 docker-compose up
 ```
-If it is the first time you run it, initialize it once:
-```bash
-yarn run db:init
-```
+
 Then run the development server:
 
 ```bash
