@@ -41,8 +41,12 @@ jobs:
         echo ME_CONFIG_BASICAUTH_PASSWORD=temp_password >> .env
         echo REDIS_PASSWORD=temp_redis_password >> .env
 
-    - name: Start Worker
-      run: yarn worker:start
+    - name: Start Worker in background
+      run: |
+        nohup yarn worker:start &
+  
+    - name: Wait for Worker to initialize
+      run: sleep 10
 
     - name: Build the project
       run: yarn build
