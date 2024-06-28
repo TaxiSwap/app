@@ -15,13 +15,13 @@ jobs:
           MONGO_INITDB_ROOT_USERNAME: temp_user
           MONGO_INITDB_ROOT_PASSWORD: temp_password
 
-      redis:
-        image: redis
-        ports:
-          - 6379:6379
-        options: --command redis-server --requirepass temp_redis_password
-
     steps:
+    - name: Start Redis
+      uses: supercharge/redis-github-action@1.7.0
+      with:
+        redis-version: 7
+        redis-password: 'temp_redis_password'
+
     - name: Checkout code
       uses: actions/checkout@v2
 
