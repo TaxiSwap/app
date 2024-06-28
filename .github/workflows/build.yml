@@ -31,7 +31,13 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '20'
+
+    - name: Create database directories
+      run: |
+        mkdir -p database/db
+        mkdir -p database/dev.archive
+        mkdir -p database/production
 
     - name: Install dependencies
       run: yarn install
