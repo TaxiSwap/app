@@ -10,7 +10,7 @@ import AddressInput from "./AddressInput";
 import AmountInput from "./AmountInput";
 import TransferHeader from "./TransferHeader";
 import { useTransferFormLogic } from "@/app/hooks/useTransferFormLogic";
-import TransactionSummary from "./TransactionSummary";
+import TransactionSummary2 from "./TransactionSummary2";
 
 const TransferForm = () => {
   const { config } = useNetworkStore();
@@ -122,7 +122,7 @@ const TransferForm = () => {
         >
           Go!
         </button>
-        <TransactionSummary
+        <TransactionSummary2
           gasCost={isSourceNetworkAsWallet ? estimatedUserGasCostInEther: null}
           gasUnit={userGasSymbol}
           tipAmount={tipAmount}

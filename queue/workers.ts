@@ -8,9 +8,9 @@ import {
   getMessageHashFromTransaction,
   pollAttestationStatus,
   findRejectionReason,
-} from "../app/blockchain/utils";
+} from "../app/utils/blockchain/utils";
 import { chainConfigs } from "../app/config/ChainConfigMap";
-import messageTransmitterAbi from "../app/blockchain/contracts/MessageTransmitter.abi.json";
+import messageTransmitterAbi from "../app/utils/blockchain/contracts/MessageTransmitter.abi.json";
 
 // Establish the Redis connection
 const connection = new Redis({

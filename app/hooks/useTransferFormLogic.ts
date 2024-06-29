@@ -2,14 +2,14 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useWalletStore } from "@/app/store/useWalletStore";
 import { useNetworkStore } from "@/app/store/useNetworkConfig";
 import { useTransferFormStore } from "../store/useTransferFormStore";
-import { getTokenBalance, getTipAmount } from "@/app/blockchain/utils";
+import { getTokenBalance, getTipAmount } from "@/app/utils/blockchain/utils";
 import { Provider, Signer, ethers } from "ethers";
 import { useTransferModalStore } from "@/app/store/useTransferModalStore";
 import {
   approveTokenTransfer,
   callReceiveMessage,
   depositForBurn,
-} from "@/app/blockchain/actions";
+} from "@/app/utils/blockchain/actions";
 import { chainConfigs } from "../config/ChainConfigMap";
 
 export const useTransferFormLogic = () => {

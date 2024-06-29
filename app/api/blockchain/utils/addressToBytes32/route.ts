@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { addressToBytes32 } from "../../../../blockchain/utils";
+import { addressToBytes32 } from "../../../../utils/blockchain/utils";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);

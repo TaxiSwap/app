@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { useWalletStore } from "@/app/store/useWalletStore";
-import TaxiSwapABI from "@/app/blockchain/contracts/TaxiSwap.abi.json";
+import TaxiSwapABI from "@/app/utils/blockchain/contracts/TaxiSwap.abi.json";
 import { chainConfigs } from "@/app/config/ChainConfigMap";
 import { MdClose } from "react-icons/md";
 
