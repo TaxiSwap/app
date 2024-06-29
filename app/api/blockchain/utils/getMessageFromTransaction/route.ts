@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { getMessageHashFromTransaction } from "../../../../blockchain/utils";
+import { getMessageHashFromTransaction } from "../../../../utils/blockchain/utils";
 import { chainConfigs } from "../../../../config/ChainConfigMap";
 
 export async function POST(request: Request) {

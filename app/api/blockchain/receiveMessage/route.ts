@@ -3,9 +3,9 @@ import {
   getMessageHashFromTransaction,
   pollAttestationStatus,
   findRejectionReason,
-} from "../../../blockchain/utils";
+} from "../../../utils/blockchain/utils";
 import { chainConfigs } from "../../../config/ChainConfigMap";
-import messageTransmitterAbi from "../../../blockchain/contracts/MessageTransmitter.abi.json";
+import messageTransmitterAbi from "../../../utils/blockchain/contracts/MessageTransmitter.abi.json";
 import { simpleQueue } from "@/queue";
 
 export async function POST(request: Request) {

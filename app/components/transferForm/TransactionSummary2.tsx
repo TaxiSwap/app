@@ -9,7 +9,7 @@ interface TransactionSummaryProps {
   finalAmountUnit: string | null;
 }
 
-const TransactionSummary: React.FC<TransactionSummaryProps> = ({
+const TransactionSummary2: React.FC<TransactionSummaryProps> = ({
   gasCost,
   gasUnit,
   tipAmount,
@@ -35,4 +35,4 @@ const TransactionSummary: React.FC<TransactionSummaryProps> = ({
   );
 };
 
-export default TransactionSummary;
+export default TransactionSummary2;

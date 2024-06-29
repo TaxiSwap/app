@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { pollAttestationStatus } from '../../../../blockchain/utils';
+import { pollAttestationStatus } from '../../../../utils/blockchain/utils';
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
