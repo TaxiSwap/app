@@ -8,19 +8,27 @@ cp .env.example .env
 cp .env.local.example .env.local
 ```
 
-First run the database:
+First run the databases:
 
 ```bash
 docker-compose up
 ```
-If it is the first time you run it, initialize it once:
+
+Then run the worker:
 ```bash
-yarn run db:init
+yarn run worker:start
 ```
-Then run the development server:
+
+And finaly run the application server:
 
 ```bash
 yarn dev
+```
+
+Or, if on production:
+```bash
+yarn build
+yarn start
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
